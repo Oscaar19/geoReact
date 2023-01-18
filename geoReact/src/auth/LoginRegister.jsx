@@ -16,3 +16,5 @@ const LoginRegister = () => {
 }
 
 export default LoginRegister
+
+//Preguntar porque en el login se hace por cada input un estado, y en el register hay un solo input.
