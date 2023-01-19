@@ -56,35 +56,39 @@ export default function Register({ setCanvi }) {
   //Preguntar por estas dos funciones que hacen
   return (
     <>
-      <h1>Create your profile</h1>
-      <form>
-          Name:
-          <input name="name" type="text" onChange={handleChange} />
+      <div className="container">
+        <div className="container">
+          <h1>Create your profile</h1>
+        </div>
+        <form>
+          <input className="sr-only" name="name" type="text" placeholder="Name" onChange={handleChange} />
           <br />
-          E-mail
-          <input name="email" type="email" onChange={handleChange} />
           <br />
-          Password:
-          <input name="password" type="password" onChange={handleChange} />
+          <input name="email" type="email" placeholder="E-mail" onChange={handleChange} />
           <br />
-          Confirm Password:
-          <input name="password2" type="password" onChange={handleChange} />
           <br />
-          <button
+          <input name="password" type="password" placeholder="Password" onChange={handleChange} />
+          <br />
+          <br />
+          <input name="password2" type="password" placeholder="Confirm Password" onChange={handleChange} />
+          <br />
+          <br />
+          <button className="btn btn-primary"
           onClick={(e) => {
             handleRegister(e);
           }}
           >
           CREATE ACCOUNT
           </button>
-      </form>
-      <button
-        onClick={() => {
-          setCanvi(true);
-        }}
-      >
-        Already registered?
-      </button>
+        </form>
+        <button className="btn btn-link" 
+            onClick={() => {
+            setCanvi(true);
+          }}
+        >
+          Already registered?
+        </button>
+      </div>
     </>
   );
 }

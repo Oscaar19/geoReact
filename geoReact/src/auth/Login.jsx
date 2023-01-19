@@ -50,7 +50,7 @@ export default function Login({ setCanvi }) {
             setPassword(e.target.value);
           }}
         />
-        <div class="error alert alert-danger alert-dismissible fade"></div>
+        <div className="error alert alert-danger alert-dismissible fade"></div>
         <br />
         <button
           onClick={(e) => {
