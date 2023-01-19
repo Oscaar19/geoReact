@@ -4,7 +4,7 @@ import LoginRegister from './auth/LoginRegister'
 const App = () => {
   return (
     <>
-    <div>App</div>
+    <div className="alert">App</div>
     <LoginRegister/>
     
     </>
