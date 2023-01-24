@@ -1,59 +1,52 @@
 import { useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "../userContext";
 
 export default function Register({ setCanvi }) {
   let [formulari, setFormulari] = useState({});
+  let [missatge, setMessage] = useState("");
+  let {authToken,setAuthToken} = useContext(UserContext);
 
   const handleChange = (e) => {
       e.preventDefault();
 
+      setMessage("")
+
       setFormulari({
-      ...formulari,
-      [e.target.name]: e.target.value
+        ...formulari,
+        [e.target.name]: e.target.value
       });
   };
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     let { name, password, password2, email } = formulari;
 
-    alert(
-      "He enviat les Dades:  " +
-      name +
-      "/" +
-      email +
-      "/" +
-      password +
-      "/" +
-      password2
-    );
+    
     if (password2 !== password) {
-      alert("Els passwords han de coincidir");
+      setMessage("Els passwords han de coincidir");
       return false;
     }
 
-    fetch("http://127.0.0.1:8000/api/register", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      // Si els noms i les variables coincideix, podem simplificar
-      body: JSON.stringify({ name, email, password })
-    })
-      .then((data) => data.json())
-      .then((resposta) => {
-        console.log(resposta);
-        if (resposta.success === true) {
-          alert(resposta.authToken);
-        }
-      })
-      .catch((data) => {
-        console.log(data);
-        alert("Se ha producido un error");
+    try{
+      const data = await fetch("https://backend.insjoaquimmir.cat/api/register", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        // Si els noms i les variables coincideix, podem simplificar
+        body: JSON.stringify({ name, email, password })
       });
+      const resposta = await data.json();
+      if (resposta.success === true) setAuthToken(resposta.authToken);
+      else setMessage(resposta.message);
+    }catch{
+      console.log(data);
+      alert("Se ha producido un error.");
+    }
   };
 
-  //Preguntar por estas dos funciones que hacen
   return (
     <>
       <div className="container">
@@ -72,6 +65,8 @@ export default function Register({ setCanvi }) {
           <br />
           <input name="password2" type="password" placeholder="Confirm Password" onChange={handleChange} />
           <br />
+          <br />
+          {missatge ? <div>{missatge}</div> : <></>}
           <br />
           <button className="btn btn-primary"
           onClick={(e) => {

@@ -1,37 +1,35 @@
+import { useContext } from "react";
 import { useState } from "react";
+import { UserContext } from "../userContext";
 
 export default function Login({ setCanvi }) {
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
+  let [missatge, setMessage] = useState("");
 
-  const sendLogin = (e) => {
+
+  let {authToken,setAuthToken} = useContext(UserContext)
+  const sendLogin = async (e) => {
     e.preventDefault();
-    fetch("http://127.0.0.1:8000/api/login", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      body: JSON.stringify({ email: email, password: password })
-    })
-      .then((data) => data.json())
-      .then((resposta) => {
-        console.log(resposta);
-        if (resposta.success === true) {
-          localStorage.setItem("token",resposta.authToken)
-        }
-        else{
-          alert("El email o la contraseña no es correcto.")
-        }
-      })
-      .catch((data) => {
-        console.log(data);
-        alert("Se ha producido un error.");
+    try {
+      const data = await fetch("https://backend.insjoaquimmir.cat/api/login", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({ email, password })
       });
+      const resposta = await data.json();
+      if (resposta.success === true) setAuthToken(resposta.authToken);
+      else setMessage(resposta.message);
+    }catch{
+      console.log(data);
+      alert("Se ha producido un error.");
+    };
 
     alert("He enviat les Dades:  " + email + "/" + password);
   };
-
   
   return (
     <>
@@ -59,6 +57,8 @@ export default function Login({ setCanvi }) {
         >
         LOG IN
         </button>
+        {missatge ? <div>{missatge}</div> : <></>}
+        <br />
       </form>
       <button
         className="btn btn-primary"
