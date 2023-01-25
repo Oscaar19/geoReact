@@ -2,6 +2,9 @@ import { useContext } from "react";
 import React, { useState, useEffect } from 'react';
 import { UserContext } from "../userContext";
 import { Link } from 'react-router-dom';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
 
 export default function Header() {
   let { authToken, setAuthToken } = useContext(UserContext);
@@ -40,7 +43,10 @@ export default function Header() {
                 method: "GET",
             })
             const resposta = await data.json();
-            if (resposta.success === true) setUserName(resposta.user.name);
+            if (resposta.success === true) {
+                setUserName(resposta.user.name);
+                setRoles(resposta.roles);
+            }
             else console.log("No user found")
         }catch{
             console.log(data);
@@ -54,20 +60,29 @@ export default function Header() {
 
   return (
     <>
-        <div>
-            <Link to="/places">Llocs </Link>
-            <Link to="/posts">Publicacions </Link>
-            <Link to="/about">About </Link>
-            <p>{userName}</p>
-            { roles.map (  (v)=> ( 
-                <span key={v}> {v} </span>
-            ) ) }
-            <button onClick={(e) => {
-                    sendLogout(e);
-                }}>Logout
-            </button>
-        </div>
-        <hr />
+        <Navbar bg="dark" variant="dark">
+            <Container>
+                <Navbar.Brand href="#home">GEOREACT</Navbar.Brand>
+                <Nav className="me-auto">
+                    <Link className="link-secondary text-decoration-none text-uppercase" to="/places">Llocs&nbsp;&nbsp;</Link>
+                    <Link className="link-secondary text-decoration-none text-uppercase" to="/posts">Publicacions&nbsp;&nbsp;</Link>
+                    <Link className="link-secondary text-decoration-none text-uppercase" to="/about">About</Link>
+                </Nav>
+                <Navbar.Collapse className="justify-content-end">
+                    <span className="text-warning">{userName}&nbsp;</span>
+                    
+                    { roles.map (  (v)=> ( 
+                        <span className="text-white" key={v}> {v} &nbsp;</span>
+                    ) ) }
+                    
+                    <button className="justify-content-end" onClick={(e) => {
+                            sendLogout(e);
+                        }}>Logout
+                    </button>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
     </>
   );
 } 
+
