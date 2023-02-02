@@ -3,7 +3,6 @@ import LoginRegister from './auth/LoginRegister'
 import { useState } from "react";
 import { UserContext } from "./userContext";
 import Header from './layout/Header';
-import Footer from './layout/Footer';
 import About from './About';
 import Posts from './posts/Posts';
 import NotFound from './NotFound';
@@ -19,10 +18,11 @@ import PlacesMenu from './places/PlacesMenu';
 const App = () => {
 
   let [authToken, setAuthToken] = useState("");
+  let [usuari, setUsuari] = useState("");
 
   return (
     <>
-      <UserContext.Provider value={{ authToken, setAuthToken }}  >
+      <UserContext.Provider value= { { usuari, setUsuari,authToken,setAuthToken }}>
         {authToken ? (
           <>
             <Header />
@@ -37,7 +37,6 @@ const App = () => {
               <Route path="/places/add" element={<PlaceAdd />} />
               <Route path="/places/:id" element={ <Place/> } /> 
             </Routes>
-            <Footer/>
           </>
         ) : (
           <LoginRegister />

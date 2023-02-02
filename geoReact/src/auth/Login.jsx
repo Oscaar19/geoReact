@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import { useState } from "react";
 import { UserContext } from "../userContext";
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Form from 'react-bootstrap/Form';
 
 export default function Login({ setCanvi }) {
   let [email, setEmail] = useState("");
@@ -9,6 +11,7 @@ export default function Login({ setCanvi }) {
 
 
   let {authToken,setAuthToken} = useContext(UserContext)
+  let {usuari, setUsuari} = useContext(UserContext)
   const sendLogin = async (e) => {
     e.preventDefault();
     try {
@@ -21,35 +24,30 @@ export default function Login({ setCanvi }) {
         body: JSON.stringify({ email, password })
       });
       const resposta = await data.json();
-      if (resposta.success === true) setAuthToken(resposta.authToken);
-      else setMessage(resposta.message);
+      if (resposta.success === true) {
+        setAuthToken(resposta.authToken);
+        setUsuari(email)
+      }else {
+        setMessage(resposta.message)
+      }
     }catch{
       console.log(data);
       alert("Se ha producido un error.");
     };
 
-    alert("He enviat les Dades:  " + email + "/" + password);
   };
   
   return (
     <>
-      <h1>Log In</h1>
-      <form>
-        Email:
-        <input name="email" type="text"
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-        />
-        <br />
-        Password:{" "}
-        <input name="password" type="password"
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        />
-        <div className="error alert alert-danger alert-dismissible fade"></div>
-        <br />
+      <div className="w-50 p-3 align-middle">
+        <h1>Log In</h1>
+        <FloatingLabel controlId="floatingInput" label="Email address" className="mb-3">
+          <Form.Control type="email" placeholder="name@example.com" onChange={(e) => {setEmail(e.target.value);}}/>
+        </FloatingLabel>
+        <FloatingLabel controlId="floatingPassword" label="Password">
+          <Form.Control type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value);}} />
+        </FloatingLabel>  
+        <br />    
         <button
           onClick={(e) => {
             sendLogin(e);
@@ -57,17 +55,18 @@ export default function Login({ setCanvi }) {
         >
         LOG IN
         </button>
+        <br />
         {missatge ? <div>{missatge}</div> : <></>}
         <br />
-      </form>
-      <button
-        className="btn btn-primary"
-        onClick={() => {
-          setCanvi(false);
-        }}
-      >
-        Not registered?
-      </button>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            setCanvi(false);
+          }}
+        >
+          Not registered?
+        </button>
+      </div>
     </>
   );
 }
