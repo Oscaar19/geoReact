@@ -10,6 +10,9 @@ export default function PlacesGrid() {
     let {authToken,setAuthToken} = useContext(UserContext)
     let [places,setPlaces] = useState([])
     let {usuari, setUsuari} = useContext(UserContext)
+    let [refresh,setRefresh] = useState(false)
+    let [missatge, setMessage] = useState("");
+
 
     const getPlaces = async () => {
         try{
@@ -32,9 +35,32 @@ export default function PlacesGrid() {
             alert("Se ha producido un error.");
         }
     }
+
+    const deletePlace = async (id) => {
+        //e.preventDefault();
+        try{
+            const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id, {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    'Authorization': 'Bearer '  + authToken,
+                },
+                method: "DELETE",
+            })
+            const resposta = await data.json();
+            if (resposta.success === true) {
+                setRefresh(!refresh);
+            }
+            setMessage(resposta.message)
+        }catch(e) {
+            console.log(e);
+            alert("Se ha producido un error.");
+        }
+    }
+
     useEffect(() => {
         getPlaces();
-    }, [])
+    }, [refresh])
 
 
     function isPublic(place) {
@@ -51,7 +77,7 @@ export default function PlacesGrid() {
                 <Row>
                     {places.map ((place) => ( 
                         (isPublic(place) || isOwner(place)) ?
-                            <Col sm><PlaceGrid place={place}/></Col>
+                            <Col sm><PlaceGrid place={place}  deletePlace={deletePlace}/></Col>
                         : ""
                     ))}
                 </Row>

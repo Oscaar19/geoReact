@@ -66,12 +66,13 @@ const PlaceAdd = () => {
         body: formData
       });
       const resposta = await data.json();
-      if (resposta.success === true) setMessage(resposta.message);
+      if (resposta.success === true) setMessage("Place afegit correctament.");
       else setMessage(resposta.message);
     }catch{
       console.log(data);
       alert("Se ha producido un error.");
     }
+    formAddPlace.reset()
   };
   
   return (
@@ -80,7 +81,7 @@ const PlaceAdd = () => {
         <div className="container">
           <h1>Add a place</h1>
         </div>
-        <form>
+        <form id="formAddPlace">
           <input className="sr-only" name="name" value={formulari.name} type="text" placeholder="Name" onChange={handleChange} />
           <br />
           <br />

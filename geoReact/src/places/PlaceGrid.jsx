@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { UserContext } from "../userContext";
 
 
-const PlaceGrid = ({place}) => {
+const PlaceGrid = ({place,deletePlace}) => {
 
     let {usuari, setUsuari} = useContext(UserContext)
 
@@ -30,7 +30,9 @@ const PlaceGrid = ({place}) => {
                 <Card.Body>
                     <Link className="link-secondary text-decoration-none text-uppercase" to={"/places/"+place.id}>&nbsp;VEURE&nbsp;&nbsp;</Link>
                     <Link className="link-secondary text-decoration-none text-uppercase" to={"/places/edit/"+place.id}>&nbsp;EDITAR&nbsp;&nbsp;</Link>
-                    <Link className="link-secondary text-decoration-none text-uppercase" to="/places/grid">&nbsp;ESBORRAR&nbsp;&nbsp;</Link>
+                    <button onClick={(() => {
+                        deletePlace(place.id)
+                    })}>&nbsp;ESBORRAR&nbsp;&nbsp;</button>
                 </Card.Body>
             :   <Card.Body>
                     <Link className="link-secondary text-decoration-none text-uppercase" to={"/places/"+place.id}>&nbsp;VEURE&nbsp;&nbsp;</Link>

@@ -11,19 +11,7 @@ const PlaceEdit = () => {
     let [missatge, setMessage] = useState("");
     let [place,setPlace] = useState({})
     const [ isLoading, setIsLoading] = useState(true)
-  
-    useEffect (()=> {
-      navigator.geolocation.getCurrentPosition( (pos )=> {
-        setFormulari({
-          ...formulari,
-          latitude :  pos.coords.latitude,
-          longitude: pos.coords.longitude,
-          visibility: 1
-      
-        })
-      });
-    },[])
-  
+   
   
     const handleChange = (e) => {
       e.preventDefault();
@@ -59,7 +47,15 @@ const PlaceEdit = () => {
             })
             const resposta = await data.json();
             if (resposta.success === true) {
-                setFormulari(resposta.data);
+              const { data } = resposta
+                setFormulari({
+                  name : data.name,
+                  description: data.description,
+                  upload: "",
+                  latitude: data.latitude,
+                  longitude: data.longitude,
+                  visibility: data.visibility.id,
+                });
                 setIsLoading(false);
 
                 console.log(resposta.data)
@@ -69,12 +65,7 @@ const PlaceEdit = () => {
             console.log(e);
             alert("Se ha producido un error.");
         }
-    }
-    useEffect(() => {
-        getPlace();
-    }, [])
-  
-  
+    }  
   
     const handleEditPlace = async (e) => {
       e.preventDefault();
@@ -98,7 +89,7 @@ const PlaceEdit = () => {
           body: formData
         });
         const resposta = await data.json();
-        if (resposta.success === true) setMessage(resposta.message);
+        if (resposta.success === true) setMessage("Place editat correctament.");
         else setMessage(resposta.message);
       }catch{
         console.log(data);
@@ -106,45 +97,63 @@ const PlaceEdit = () => {
       }
     };
 
+    useEffect (()=> {
+      getPlace();
+      handleEditPlace() 
+      navigator.geolocation.getCurrentPosition( (pos )=> {
+        setFormulari({
+          ...formulari,
+          latitude :  pos.coords.latitude,
+          longitude: pos.coords.longitude,
+          visibility: 1
+      
+        })
+      });
+    },[])
+
     return (
-        <div className="container">
-            <div className="container">
-                <h1>Edit place</h1>
-            </div>
-            <form>
-                <input className="sr-only" name="name" value={formulari.name} type="text" placeholder="Name" onChange={handleChange} />
-                <br />
-                <br />
-                <input name="description" value={formulari.description} type="text" placeholder="Description" onChange={handleChange} />
-                <br />
-                <br />
-                <input name="upload" type="file" onChange={handleChange} />
-                <br />
-                <br />
-                <input name="latitude" value={formulari.latitude} type="text" onChange={handleChange} />
-                <br />
-                <br />
-                <input name="longitude" value={formulari.longitude} type="text" onChange={handleChange} />
-                <br />
-                <br />
-                <select onChange={handleChange} name="visibility" value={formulari.visibility} className="form-control">
-                    <option value="1">Public</option>
-                    <option value="2">Private</option>
-                    <option value="3">Contacts</option>
-                </select>
-                <br />
-                <br />
-                {missatge ? <div>{missatge}</div> : <></>}
-                <br />
-                <button className="btn btn-primary"
-                onClick={(e) => {
-                    handleEditPlace(e);
-                }}
-                >
-                SUBMIT PLACE
-                </button>
-            </form>
-        </div>
+      <>
+        { isLoading ? (<div> Me cargo ....</div>) : ( 
+          <div className="container">
+              <div className="container">
+                  <h1>Edit place</h1>
+              </div>
+              <form>
+                  <input className="sr-only" name="name" value={formulari.name} type="text" placeholder="Name" onChange={handleChange} />
+                  <br />
+                  <br />
+                  <input name="description" value={formulari.description} type="text" placeholder="Description" onChange={handleChange} />
+                  <br />
+                  <br />
+                  <input name="upload" type="file" onChange={handleChange} />
+                  <br />
+                  <br />
+                  <input name="latitude" value={formulari.latitude} type="text" onChange={handleChange} />
+                  <br />
+                  <br />
+                  <input name="longitude" value={formulari.longitude} type="text" onChange={handleChange} />
+                  <br />
+                  <br />
+                  <select onChange={handleChange} name="visibility" value={formulari.visibility} className="form-control">
+                      <option value="1" checked>Public</option>
+                      <option value="2">Private</option>
+                      <option value="3">Contacts</option>
+                  </select>
+                  <br />
+                  <br />
+                  {missatge ? <div>{missatge}</div> : <></>}
+                  <br />
+                  <button className="btn btn-primary"
+                  onClick={(e) => {
+                      handleEditPlace(e);
+                  }}
+                  >
+                  SUBMIT PLACE
+                  </button>
+              </form>
+          </div>
+        )}
+      </>
     )
 }
 
