@@ -72,48 +72,49 @@ const PlaceAdd = () => {
       console.log(data);
       alert("Se ha producido un error.");
     }
-    formAddPlace.reset()
   };
   
   return (
     <>
-      <div className="container">
-        <div className="container">
-          <h1>Add a place</h1>
+      <div className="container bg-secondary mw-100 h-100 d-flex justify-content-center">
+        <div>
+          <div className="container">
+            <h1>Add a place</h1>
+          </div>
+          <form>
+            <input className="sr-only" name="name" value={formulari.name} type="text" placeholder="Name" onChange={handleChange} />
+            <br />
+            <br />
+            <input name="description" value={formulari.description} type="text" placeholder="Description" onChange={handleChange} />
+            <br />
+            <br />
+            <input name="upload" type="file" onChange={handleChange} />
+            <br />
+            <br />
+            <input name="latitude" value={formulari.latitude} type="text" onChange={handleChange} />
+            <br />
+            <br />
+            <input name="longitude" value={formulari.longitude} type="text" onChange={handleChange} />
+            <br />
+            <br />
+            <select onChange={handleChange} name="visibility" value={formulari.visibility} className="form-control">
+              <option value="1">Public</option>
+              <option value="2">Private</option>
+              <option value="3">Contacts</option>
+            </select>
+            <br />
+            <br />
+            {missatge ? <div>{missatge}</div> : <></>}
+            <br />
+            <button className="btn btn-primary"
+            onClick={(e) => {
+              handleAddPlace(e);
+            }}
+            >
+            CREATE PLACE
+            </button>
+          </form>
         </div>
-        <form id="formAddPlace">
-          <input className="sr-only" name="name" value={formulari.name} type="text" placeholder="Name" onChange={handleChange} />
-          <br />
-          <br />
-          <input name="description" value={formulari.description} type="text" placeholder="Description" onChange={handleChange} />
-          <br />
-          <br />
-          <input name="upload" type="file" onChange={handleChange} />
-          <br />
-          <br />
-          <input name="latitude" value={formulari.latitude} type="text" onChange={handleChange} />
-          <br />
-          <br />
-          <input name="longitude" value={formulari.longitude} type="text" onChange={handleChange} />
-          <br />
-          <br />
-          <select onChange={handleChange} name="visibility" value={formulari.visibility} className="form-control">
-            <option value="1">Public</option>
-            <option value="2">Private</option>
-            <option value="3">Contacts</option>
-          </select>
-          <br />
-          <br />
-          {missatge ? <div>{missatge}</div> : <></>}
-          <br />
-          <button className="btn btn-primary"
-          onClick={(e) => {
-            handleAddPlace(e);
-          }}
-          >
-          CREATE PLACE
-          </button>
-        </form>
       </div>
     </>
   )

@@ -1,22 +1,25 @@
 import { useContext } from "react";
 import React, { useState, useEffect } from 'react';
-import { UserContext } from "../userContext";
-import PlaceGrid from './PlaceGrid';
+import { UserContext } from "../../userContext";
+import Review from './Review';
+import ReviewAdd from './ReviewAdd';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-export default function PlacesGrid() {
+export default function ReviewsList({place}) {
     let {authToken,setAuthToken} = useContext(UserContext)
-    let [places,setPlaces] = useState([])
-    let {usuari, setUsuari} = useContext(UserContext)
-    let [refresh,setRefresh] = useState(false)
+    let [reviews,setReviews] = useState([])
     let [missatge, setMessage] = useState("");
+    let [refresh,setRefresh] = useState(false)
+    let [add,setAdd]=useState(true)
+    let {usuari, setUsuari} = useContext(UserContext)
+    let id = place.id
 
-
-    const getPlaces = async () => {
+    const getReviews = async () => {
+        
         try{
-            const data = await fetch("https://backend.insjoaquimmir.cat/api/places", {
+            const data = await fetch("https://backend.insjoaquimmir.cat/api/places/"+id+"/reviews", {
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
@@ -26,19 +29,25 @@ export default function PlacesGrid() {
             })
             const resposta = await data.json();
             if (resposta.success === true) {
-                setPlaces(resposta.data);
+                setReviews(resposta.data);
                 console.log(resposta.data)
+                resposta.data.map ((v) => { 
+                    if (v.user.email == usuari){
+                        setAdd(false)
+                    }
+                })
+
             }
-            else console.log("There is not any place.")
+            else console.log("There aren't reviews.")
         }catch(e) {
             console.log(e);
             alert("Se ha producido un error.");
         }
     }
 
-    const deletePlace = async (id) => {
+    const deleteReview = async (reviewId) => {
         try{
-            const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id, {
+            const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id +"/reviews/"+reviewId, {
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
@@ -49,6 +58,7 @@ export default function PlacesGrid() {
             const resposta = await data.json();
             if (resposta.success === true) {
                 setRefresh(!refresh);
+                setAdd(true)
             }
             setMessage(resposta.message)
         }catch(e) {
@@ -57,27 +67,22 @@ export default function PlacesGrid() {
         }
     }
 
+    const ferRefresh = () =>{
+        setRefresh(!refresh);
+    }
+
     useEffect(() => {
-        getPlaces();
+        getReviews();
     }, [refresh])
 
 
-    function isPublic(place) {
-        return place.visibility.name == "public"
-    }
-
-    function isOwner(place) {
-        return place.author.name == usuari
-    }
-
     return (
         <>
+            { add ? <ReviewAdd id={id} ferRefresh={ferRefresh}/>:""}
             <Container className="bg-secondary mw-100">
                 <Row>
-                    {places.map ((place) => ( 
-                        (isPublic(place) || isOwner(place)) ?
-                            <Col sm><PlaceGrid place={place}  deletePlace={deletePlace}/></Col>
-                        : ""
+                    {reviews.map ((review) => ( 
+                        <Col sm><Review review={review} deleteReview={deleteReview}/></Col>
                     ))}
                 </Row>
             </Container>
