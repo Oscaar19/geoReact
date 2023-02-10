@@ -2,14 +2,28 @@ import { useContext } from "react";
 import React, { useState, useEffect } from 'react';
 import { UserContext } from "../userContext";
 
+const initialState= {
+  name: "",
+  description: "",
+  upload: "",
+
+  visibility: 1
+}
+
 const PlaceAdd = () => {
 
   let {authToken,setAuthToken} = useContext(UserContext)
-  let [formulari, setFormulari] = useState({});
+  const [ lat, setLat] = useState(0)
+
+  let [formulari, setFormulari] = useState(initialState);
   let [missatge, setMessage] = useState("");
 
+  
   useEffect (()=> {
     navigator.geolocation.getCurrentPosition( (pos )=> {
+
+      //setLat(pos.coords.latitude)
+
       setFormulari({
         ...formulari,
         latitude :  pos.coords.latitude,
@@ -17,8 +31,8 @@ const PlaceAdd = () => {
         visibility: 1
     
       })
-    });
-  },[])
+    });  
+},[])
 
 
   const handleChange = (e) => {
@@ -66,7 +80,15 @@ const PlaceAdd = () => {
         body: formData
       });
       const resposta = await data.json();
-      if (resposta.success === true) setMessage("Place afegit correctament.");
+      if (resposta.success === true) {
+        setMessage("Place afegit correctament.");
+        setFormulari(initialState)
+        
+        
+
+
+
+      }
       else setMessage(resposta.message);
     }catch{
       console.log(data);

@@ -14,7 +14,6 @@ const Place = () => {
     let { authToken, setAuthToken } = useContext(UserContext);
     let {usuari, setUsuari} = useContext(UserContext)
     let [favorite, setFavorite] = useState(false)
-    let [refresh,setRefresh] = useState(false)
 
     function isOwner(place) {
         return place.author.email == usuari
@@ -34,7 +33,7 @@ const Place = () => {
             const resposta = await data.json();
             if (resposta.success === true) {
                 setFavorite(true)
-                setRefresh(!refresh);
+                setPlace({...place,favorites_count:place.favorites_count+1})
             }
         }catch(e) {
             console.log(e);
@@ -58,7 +57,7 @@ const Place = () => {
                 const resposta = await data.json();
                 if (resposta.success === true) {
                     setFavorite(false)
-                    setRefresh(!refresh);
+                    setPlace({...place,favorites_count:place.favorites_count-1})
                 }
             }catch(e) {
                 console.log(e);
@@ -128,7 +127,7 @@ const Place = () => {
     useEffect(() => {
         getPlace();
         testFavorite()
-    }, [refresh])
+    }, [])
 
 
     return (
