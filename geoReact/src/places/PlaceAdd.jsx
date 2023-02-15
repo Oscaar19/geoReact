@@ -13,7 +13,6 @@ const initialState= {
 const PlaceAdd = () => {
 
   let {authToken,setAuthToken} = useContext(UserContext)
-  const [ lat, setLat] = useState(0)
 
   let [formulari, setFormulari] = useState(initialState);
   let [missatge, setMessage] = useState("");

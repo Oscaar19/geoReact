@@ -32,7 +32,7 @@ const PlaceGrid = ({place,deletePlace}) => {
                     <Link className="link-secondary text-decoration-none text-uppercase" to={"/places/edit/"+place.id}>&nbsp;EDITAR&nbsp;&nbsp;</Link>
                     <button onClick={(() => {
                         deletePlace(place.id)
-                    })}>&nbsp;ESBORRAR&nbsp;&nbsp;</button>
+                    })}>&nbsp;ESBORRAR&nbsp;&nbsp;</button> 
                 </Card.Body>
             :   <Card.Body>
                     <Link className="link-secondary text-decoration-none text-uppercase" to={"/places/"+place.id}>&nbsp;VEURE&nbsp;&nbsp;</Link>
