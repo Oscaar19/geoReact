@@ -1,26 +1,24 @@
 import { useState } from "react";
 import { useContext } from "react";
+import useForm from "../hooks/useForm";
 import { UserContext } from "../userContext";
 
 export default function Register({ setCanvi }) {
-  let [formulari, setFormulari] = useState({});
   let [missatge, setMessage] = useState("");
   let {authToken,setAuthToken} = useContext(UserContext);
 
-  const handleChange = (e) => {
-      e.preventDefault();
+  const { formState, handleChange } = useForm({
+    email: "",
+    password: "",
+    password2: "",
+    name: "",
+  });
+  const { name, password, password2, email } = formState
 
-      setMessage("")
 
-      setFormulari({
-        ...formulari,
-        [e.target.name]: e.target.value
-      });
-  };
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    let { name, password, password2, email } = formulari;
 
     
     if (password2 !== password) {

@@ -8,7 +8,7 @@ const LoginRegister = () => {
     let [isLogin, setLogin] = useState(true);
 
     return (
-        <div className="App">
+        <div className="mh-100 d-flex justify-content-center align-items-center">
             {isLogin ? <Login setCanvi={setLogin} /> : <Register setCanvi={setLogin} />}
         </div>
     );

@@ -1,33 +1,24 @@
 import { useContext } from "react";
 import React, { useState, useEffect } from 'react';
 import { UserContext } from "../../userContext";
+import useForm from "../../hooks/useForm";
 
 const ReviewAdd = ({id,ferRefresh}) => {
 
   let {authToken,setAuthToken} = useContext(UserContext)
-  let [formulari, setFormulari] = useState({});
   let [missatge, setMessage] = useState("");
 
 
 
-  const handleChange = (e) => {
-    e.preventDefault();
-
-    setMessage("")
-
-    setFormulari({
-      ...formulari,
-      [e.target.name] : e.target.value
-    })
-    
-  }
+  const { formState, handleChange,onResetForm } = useForm({
+    review: "",
+  });
+  const { review } = formState
 
 
 
   const handleAddReview = async (e) => {
     e.preventDefault();
-    console.log("Entro al handleAdd")
-    let {review}=formulari;
     const formData = new FormData();
     formData.append("review", review);
     console.log(id)
@@ -63,18 +54,13 @@ const ReviewAdd = ({id,ferRefresh}) => {
           <h1>Add a review</h1>
         </div>
         <form>
-          <textarea rows={7} className="form-control" name="review" value={formulari.review} type="text" placeholder="Write your review here" onChange={handleChange} />
+          <textarea rows={7} className="form-control" name="review" value={review} type="text" placeholder="Write your review here" onChange={handleChange} />
           <br />
           <br />
           {missatge ? <div>{missatge}</div> : <></>}
           <br />
-          <button className="btn btn-primary"
-          onClick={(e) => {
-            handleAddReview(e);
-          }}
-          >
-          CREATE REVIEW
-          </button>
+          <button className="btn btn-primary" onClick={(e) => {handleAddReview(e);}}>CREATE REVIEW</button>
+          <button className="btn btn-secondary" onClick={(e) => {e.preventDefault();onResetForm()}}>RESET</button>
         </form>
       </div>
     </>
