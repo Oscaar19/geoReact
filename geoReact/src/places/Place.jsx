@@ -1,19 +1,38 @@
-import React, { useState, useEffect,useContext } from 'react';
-import {useParams } from 'react-router-dom';
+import React, { useState, useEffect,useContext, useReducer } from 'react';
+import {useLocation, useParams } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../userContext';
 import ReviewsList from './reviews/ReviewsList';
+import placesMarksReducer from './placesMarksReducer';
+import Button from 'react-bootstrap/esm/Button';
+import Swal from 'sweetalert2'
+
+const initialState = [];
+
+const init = ()=> {
+
+    return JSON.parse(localStorage.getItem("marks")) || []
+
+}
 
 
 const Place = () => {
+
+    const [marks, dispatchPlaces] = useReducer(placesMarksReducer, initialState,init);
+    const { pathname } = useLocation()
+
     const { id } = useParams();
     let [place,setPlace] = useState({})
     const [ isLoading, setIsLoading] = useState(true)
     let { authToken, setAuthToken } = useContext(UserContext);
     let {usuari, setUsuari} = useContext(UserContext)
     let [favorite, setFavorite] = useState(false)
+
+    useEffect(() => {
+        localStorage.setItem("marks", JSON.stringify(marks));
+    }, [marks]);
 
     function isOwner(place) {
         return place.author.email == usuari
@@ -69,6 +88,31 @@ const Place = () => {
             alert("Se ha producido un error.");
         }
     }
+
+    const markPlace = (place) => {
+        console.log("Afegeixo");
+        console.log({ place });
+
+        const mark = {
+            id: new Date().getTime(),
+            name: place.name,
+            description: place.description,
+            ruta: pathname
+        };
+
+        const action = {
+            type: "Add mark",
+            payload: mark
+        };
+        console.log(mark)
+        dispatchPlaces(action);
+
+        Swal.fire(
+            'Bé!',
+            'Has desat aquest place!.',
+            'success'
+        )
+    };
 
     
     const getPlace = async () => {
@@ -163,7 +207,10 @@ const Place = () => {
                             <Link className="link-secondary text-decoration-none text-uppercase" to={"/places/edit/"+place.id}>&nbsp;EDITAR&nbsp;&nbsp;</Link>
                             <Link className="link-secondary text-decoration-none text-uppercase" to="/places/grid">&nbsp;ESBORRAR&nbsp;&nbsp;</Link>
                         </Card.Body>
-                    :  <div></div>
+                    :  
+                        <Card.Body>
+                            <Button variant="warning" onClick={() => markPlace(place)}>DESAR</Button>
+                        </Card.Body>
                     }
                     
                 </Card>

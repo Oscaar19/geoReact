@@ -12,6 +12,7 @@ const PlacesMenu = () => {
             <Nav className="me-auto">
                 <Link className="text-dark text-decoration-none text-uppercase" to="/places/grid">&nbsp;Grid&nbsp;&nbsp;</Link>
                 <Link className="text-dark text-decoration-none text-uppercase" to="/places">Llista&nbsp;&nbsp;</Link>
+                <Link className="text-dark text-decoration-none text-uppercase" to="/places/marks">Marcats&nbsp;&nbsp;</Link>
             </Nav>
             <Navbar.Collapse className="justify-content-end">
                 <form className="form-inline my-2 my-lg-0">

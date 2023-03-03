@@ -82,11 +82,6 @@ const PlaceAdd = () => {
       if (resposta.success === true) {
         setMessage("Place afegit correctament.");
         setFormulari(initialState)
-        
-        
-
-
-
       }
       else setMessage(resposta.message);
     }catch{

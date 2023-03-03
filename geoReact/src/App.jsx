@@ -13,7 +13,8 @@ import PlacesGrid from './places/PlacesGrid';
 import PlaceEdit from './places/PlaceEdit';
 import PlacesList from './places/PlacesList';
 import PlacesMenu from './places/PlacesMenu';
-
+import ToDos from './todos/ToDos';
+import PlaceMarks from './places/PlaceMarks';
 
 const App = () => {
 
@@ -36,6 +37,8 @@ const App = () => {
               <Route path="/places/edit/:id" element={<> <PlacesMenu/><PlaceEdit /></>} />
               <Route path="/places/add" element={<> <PlacesMenu/><PlaceAdd /></>} />
               <Route path="/places/:id" element={ <Place/> } />
+              <Route path="/places/marks" element={<> <PlacesMenu/><PlaceMarks/></>} />
+              <Route path="/todos" element={ <ToDos/>} />
             </Routes>
           </>
         ) : (

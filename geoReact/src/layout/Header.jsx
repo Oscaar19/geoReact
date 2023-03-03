@@ -66,6 +66,7 @@ export default function Header() {
                 <Nav className="me-auto">
                     <Link className="link-secondary text-decoration-none text-uppercase" to="/places">Llocs&nbsp;&nbsp;</Link>
                     <Link className="link-secondary text-decoration-none text-uppercase" to="/posts">Publicacions&nbsp;&nbsp;</Link>
+                    <Link className="link-secondary text-decoration-none text-uppercase" to="/todos">Todos&nbsp;&nbsp;</Link>
                     <Link className="link-secondary text-decoration-none text-uppercase" to="/about">About</Link>
                 </Nav>
                 <Navbar.Collapse className="justify-content-end">
