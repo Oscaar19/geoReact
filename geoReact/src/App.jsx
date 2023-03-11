@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import LoginRegister from './auth/LoginRegister'
 import { useState } from "react";
 import { UserContext } from "./userContext";
@@ -15,11 +15,41 @@ import PlacesList from './places/PlacesList';
 import PlacesMenu from './places/PlacesMenu';
 import ToDos from './todos/ToDos';
 import PlaceMarks from './places/PlaceMarks';
+import { db } from "./firebase";
+import {collection,getDocs,} from "firebase/firestore";
+import { useDispatch } from 'react-redux';
+
 
 const App = () => {
 
   let [authToken, setAuthToken] = useState("");
   let [usuari, setUsuari] = useState("");
+
+  const todosCollectionRef =collection(db,"todos")
+  const marksCollectionRef =collection(db,"placesMarks")
+  const dispatch = useDispatch()
+
+  const getTodos = async () => {
+    const dades = await getDocs(todosCollectionRef);
+    dades.docs.map((v) => {
+      dispatch (addtodo(v.data()))
+    });
+  };
+
+  const getMarks = async () => {
+    const dadesMarks = await getDocs(marksCollectionRef);
+    dadesMarks.docs.map((v) => {
+      dispatch (addmark(v.data()))
+    });
+  };
+
+  useEffect(() => {
+    getTodos();
+    getMarks();
+  }, [usuari]);
+
+
+
 
   return (
     <>
@@ -29,7 +59,7 @@ const App = () => {
             <Header />
             <Routes>
               <Route path="*" element={<NotFound />} />
-              <Route path="/" element={<About />} />
+              <Route path="/" element={<> <PlacesMenu/><PlacesGrid /> </>} />
               <Route path="/about" element={<About />} />
               <Route path="/posts" element={<Posts />} />
               <Route path="/places/grid" element={<> <PlacesMenu/><PlacesGrid /> </>} />

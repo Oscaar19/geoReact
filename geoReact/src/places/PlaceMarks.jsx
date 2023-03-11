@@ -1,33 +1,43 @@
-import React, { useReducer } from 'react'
+import { useSelector } from 'react-redux';
 import PlaceMark from './PlaceMark';
-import placesMarksReducer from './placesMarksReducer';
+import { db } from "../firebase";
+import {doc,getDocs,deleteDoc,addDoc, collection,} from "firebase/firestore";
 
-const initialState = [];
-
-const init = ()=> {
-
-    return JSON.parse(localStorage.getItem("marks")) || []
-
-}
 
 const PlaceMarks = () => {
 
-    const [marks, dispatchPlaces] = useReducer(placesMarksReducer, initialState,init);
+    const {marks} = useSelector(state => state.marks)
 
-    const handleDeleteMark = (id) => {
-        console.log("AQui arribo " + id);
-        dispatchPlaces({
-            type: "Del Mark",
-            payload: id
+    const marksCollectionRef =collection(db,"placesMarks")
+
+    const synchronizeMarks = async () => {
+
+        // Obtenim tots els todos per adesprés esobrrar-los
+        const dades = await getDocs(marksCollectionRef);
+        // Esborrem tots els todos
+        // aquest sistema no es recomana en entorn web,
+        // però no hi ha un altra opció
+        dades.docs.map((v) => {
+            deleteDoc(doc(db, "placesMarks", v.id));
         });
-        console.log("mark borrado")
+        // Afegim tots els todos de nou
+        marks.map((p) => {
+            addDoc(marksCollectionRef, {
+                name: p.name,
+                description: p.description,
+            });
+        });
     };
+    
+
+   
 
     return (
         <>
+            <button className="btn btn-primary" onClick={() => {synchronizeMarks();}}>SYNC</button>
             {marks.map((mark) => (
                 <tr>
-                    <PlaceMark key={mark.id} mark={mark} handleDeleteMark={handleDeleteMark}/>
+                    <PlaceMark key={mark.id} mark={mark}/>
                 </tr>
             ))}
         </>

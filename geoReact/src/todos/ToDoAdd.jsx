@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux';
 import useForm from '../hooks/useForm';
+import { addtodo } from '../slices/todoSlice';
 
-const ToDoAdd = ({handleNewToDo}) => {
-
-    
-
+const ToDoAdd = () => {
+    const dispatch = useDispatch(); 
+      
     let [missatge, setMessage] = useState("");
 
     const { description, formState, handleChange, onResetForm } = useForm({
@@ -22,7 +23,7 @@ const ToDoAdd = ({handleNewToDo}) => {
         };
 
         onResetForm();
-        handleNewToDo(newTodo)
+        dispatch(addtodo(newTodo))
     };
     return (
         <>

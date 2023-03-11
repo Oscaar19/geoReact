@@ -1,7 +1,9 @@
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { deltodo, toggletodo } from '../slices/todoSlice'
 
-const ToDo = ({todo,handleDeleteToDo,handleToggleToDo}) => {
-
+const ToDo = ({todo}) => {
+  const dispatch = useDispatch()
   return (
     <>
       {todo.done ? 
@@ -10,11 +12,11 @@ const ToDo = ({todo,handleDeleteToDo,handleToggleToDo}) => {
         <p>{todo.description}</p>
       }
       
-      <td><button onClick={(e) => {handleDeleteToDo(todo.id)}}>ESBORRAR</button></td>
+      <td><button onClick = {()=> dispatch(deltodo(todo.id))} > ESBORRAR </button></td>
       {todo.done ? 
-        <td><button onClick={(e) => {handleToggleToDo(todo.id)}}>NO FET</button></td> 
+        <td><button onClick={() => dispatch(toggletodo(todo.id))}>NO FET</button></td> 
         :
-        <td><button onClick={(e) => {handleToggleToDo(todo.id)}}>FET</button></td>
+        <td><button onClick={() => dispatch(toggletodo(todo.id))}>FET</button></td>
       }
       
     </>

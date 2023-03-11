@@ -5,22 +5,18 @@ import Container from 'react-bootstrap/Container';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../userContext';
 import ReviewsList from './reviews/ReviewsList';
-import placesMarksReducer from './placesMarksReducer';
 import Button from 'react-bootstrap/esm/Button';
 import Swal from 'sweetalert2'
+import { useDispatch, useSelector } from 'react-redux';
+import { addmark, ismarked } from '../slices/placeMarkSlice';
 
-const initialState = [];
-
-const init = ()=> {
-
-    return JSON.parse(localStorage.getItem("marks")) || []
-
-}
 
 
 const Place = () => {
 
-    const [marks, dispatchPlaces] = useReducer(placesMarksReducer, initialState,init);
+    const {marks,isMarked} = useSelector(state => state.marks)
+
+    const dispatch = useDispatch(); 
     const { pathname } = useLocation()
 
     const { id } = useParams();
@@ -94,18 +90,13 @@ const Place = () => {
         console.log({ place });
 
         const mark = {
-            id: new Date().getTime(),
+            id: place.id,
             name: place.name,
             description: place.description,
             ruta: pathname
         };
 
-        const action = {
-            type: "Add mark",
-            payload: mark
-        };
-        console.log(mark)
-        dispatchPlaces(action);
+        dispatch(addmark(mark))
 
         Swal.fire(
             'Bé!',
@@ -171,6 +162,7 @@ const Place = () => {
     useEffect(() => {
         getPlace();
         testFavorite()
+        dispatch(ismarked(id))
     }, [])
 
 
@@ -208,9 +200,13 @@ const Place = () => {
                             <Link className="link-secondary text-decoration-none text-uppercase" to="/places/grid">&nbsp;ESBORRAR&nbsp;&nbsp;</Link>
                         </Card.Body>
                     :  
-                        <Card.Body>
-                            <Button variant="warning" onClick={() => markPlace(place)}>DESAR</Button>
-                        </Card.Body>
+                        (isMarked ? <></> 
+                        :
+                            (<Card.Body>
+                                <Button variant="warning" onClick={() => markPlace(place)}>DESAR</Button>
+                            </Card.Body>)
+                        )
+                        
                     }
                     
                 </Card>
