@@ -9,12 +9,16 @@ import Button from 'react-bootstrap/esm/Button';
 import Swal from 'sweetalert2'
 import { useDispatch, useSelector } from 'react-redux';
 import { addmark, ismarked } from '../slices/placeMarkSlice';
+import { setReviewsCount } from '../slices/reviews/reviewSlice';
 
 
 
 const Place = () => {
 
     const {marks,isMarked} = useSelector(state => state.marks)
+
+    const { reviewsCount=0} = useSelector((state) => state.reviews);
+
 
     const dispatch = useDispatch(); 
     const { pathname } = useLocation()
@@ -121,6 +125,7 @@ const Place = () => {
             if (resposta.success === true) {
                 setPlace(resposta.data);
                 setIsLoading(false);
+                //dispatch(setReviewsCount(place.reviews_count))
             }
             else console.log("There is not any place.")
         }catch(e) {
@@ -190,8 +195,10 @@ const Place = () => {
                                 unfavPlace()
                             })}><svg width="25px" height="25px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" className="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet"><path fill="#DD2E44" d="M35.885 11.833c0-5.45-4.418-9.868-9.867-9.868c-3.308 0-6.227 1.633-8.018 4.129c-1.791-2.496-4.71-4.129-8.017-4.129c-5.45 0-9.868 4.417-9.868 9.868c0 .772.098 1.52.266 2.241C1.751 22.587 11.216 31.568 18 34.034c6.783-2.466 16.249-11.447 17.617-19.959c.17-.721.268-1.469.268-2.242z"></path></svg></button>)
                             }
-                        </Card.Text>
-                        <Card.Text>Hi ha un total de {place.reviews_count} ressenyes.</Card.Text>
+                        </Card.Text>  
+                        <Card.Text>Hi ha un total de {reviewsCount} ressenyes.</Card.Text>
+
+                        {/* <Card.Text>Hi ha un total de {place.reviews_count} ressenyes.</Card.Text> */}
                     </Card.Body>
                     {(isOwner(place)) ?                        
                         <Card.Body>
@@ -210,7 +217,7 @@ const Place = () => {
                     }
                     
                 </Card>
-                <div><ReviewsList place={place}/></div>
+                <div><ReviewsList id={place.id} reviews_count={place.reviews_count}/></div>
             </Container>
         )}
         </>

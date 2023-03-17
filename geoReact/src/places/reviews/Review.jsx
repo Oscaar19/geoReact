@@ -5,12 +5,17 @@ import TimeAgo from 'react-timeago'
 import spanishStrings from 'react-timeago/lib/language-strings/es'
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import { UserContext } from "../../userContext";
+import { useDispatch, useSelector } from 'react-redux';
+import { delReview } from '../../slices/reviews/thunks';
 
 
 
-const Review = ({review,deleteReview}) => {
+const Review = ({review}) => {
     const formatter = buildFormatter(spanishStrings)
-    let {usuari, setUsuari} = useContext(UserContext)
+    const { usuari,setUsuari, authToken, setAuthToken } = useContext(UserContext);
+    const { reviews = [], page=0, isLoading=true, add=true, missatge=""} = useSelector((state) => state.reviews);
+
+    const dispatch = useDispatch()
 
     function isOwner(review) {
         return review.user.email == usuari
@@ -29,7 +34,7 @@ const Review = ({review,deleteReview}) => {
                     </Card.Body> 
                     {(isOwner(review)) ? 
                         <button onClick={(() => {
-                            deleteReview(review.id)
+                            dispatch( delReview(review,authToken))
                         })}>&nbsp;ESBORRAR&nbsp;&nbsp;</button>
                     :""
                     }                  

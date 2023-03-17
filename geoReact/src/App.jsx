@@ -18,6 +18,8 @@ import PlaceMarks from './places/PlaceMarks';
 import { db } from "./firebase";
 import {collection,getDocs,} from "firebase/firestore";
 import { useDispatch } from 'react-redux';
+import { addtodo } from './slices/todoSlice';
+import { addmark } from './slices/placeMarkSlice';
 
 
 const App = () => {

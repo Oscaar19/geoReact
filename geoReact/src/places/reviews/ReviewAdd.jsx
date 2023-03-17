@@ -2,11 +2,15 @@ import { useContext } from "react";
 import React, { useState, useEffect } from 'react';
 import { UserContext } from "../../userContext";
 import useForm from "../../hooks/useForm";
+import { addReview } from "../../slices/reviews/thunks";
+import { useDispatch, useSelector } from "react-redux";
 
-const ReviewAdd = ({id,ferRefresh}) => {
+const ReviewAdd = ({id}) => {
 
-  let {authToken,setAuthToken} = useContext(UserContext)
-  let [missatge, setMessage] = useState("");
+  const { usuari,setUsuari, authToken, setAuthToken } = useContext(UserContext);
+  const { reviews = [], page=0, isLoading=true, add=true, missatge=""} = useSelector((state) => state.reviews);
+
+  const dispatch = useDispatch()
 
 
 
@@ -15,35 +19,6 @@ const ReviewAdd = ({id,ferRefresh}) => {
   });
   const { review } = formState
 
-
-
-  const handleAddReview = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("review", review);
-    console.log(id)
-
-    try{
-      console.log("Entro al try")
-      const data = await fetch("https://backend.insjoaquimmir.cat/api/places/"+id+"/reviews", {
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ' + authToken 
-        },
-        method: "POST",
-        body: formData
-      });
-      const resposta = await data.json();
-      if (resposta.success === true) {
-        setMessage("Ressenya afegida correctament.")
-        ferRefresh()
-      }
-      else setMessage(resposta.message);
-    }catch{
-      console.log(data);
-      alert("Se ha producido un error.");
-    }
-  };
 
   
   
@@ -59,7 +34,7 @@ const ReviewAdd = ({id,ferRefresh}) => {
           <br />
           {missatge ? <div>{missatge}</div> : <></>}
           <br />
-          <button className="btn btn-primary" onClick={(e) => {handleAddReview(e);}}>CREATE REVIEW</button>
+          <button className="btn btn-primary" onClick={(e) => {e.preventDefault(); dispatch(addReview(review,id,authToken))}}>CREATE REVIEW</button>
           <button className="btn btn-secondary" onClick={(e) => {e.preventDefault();onResetForm()}}>RESET</button>
         </form>
       </div>

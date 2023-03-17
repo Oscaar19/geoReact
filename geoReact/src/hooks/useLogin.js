@@ -22,6 +22,7 @@ const useLogin = () => {
           const resposta = await data.json();
           if (resposta.success === true) {
             setAuthToken(myToken);
+            setUsuari(resposta.user.email)
           }
         }
         else{
