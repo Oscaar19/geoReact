@@ -15,15 +15,11 @@ export default function ReviewsList({id,reviews_count}) {
     const dispatch = useDispatch();
     const { reviews = [], page=0, isLoading=true, add=true, missatge="", reviewsCount=0} = useSelector((state) => state.reviews);
 
-    
-    
-
     useEffect(() => {
         dispatch(setReviewsCount(reviews_count))
         dispatch(getReviews(0, id, authToken,usuari));
         
     }, []);
-
 
     return (
         <>

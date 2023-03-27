@@ -1,22 +1,23 @@
 import { useContext } from "react";
 import React, { useState, useEffect } from 'react';
 import { UserContext } from "../userContext";
-import {useParams } from 'react-router-dom';
+import {useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { editPlace, getPlace } from "../slices/places/thunks";
 
 const PlaceEdit = () => {
     const { id } = useParams();
-
+    let dispatch = useDispatch()
     let {authToken,setAuthToken} = useContext(UserContext)
     let [formulari, setFormulari] = useState({});
-    let [missatge, setMessage] = useState("");
-    let [place,setPlace] = useState({})
-    const [ isLoading, setIsLoading] = useState(true)
+    let { place = {}, isLoading=true, missatge=""} = useSelector((state) => state.places);
+    let navigate = useNavigate()
    
   
     const handleChange = (e) => {
       e.preventDefault();
   
-      setMessage("")
+      missatge="";
   
       if (e.target.type && e.target.type==="file")
         {
@@ -34,82 +35,54 @@ const PlaceEdit = () => {
       
     }
 
-    const getPlace = async () => {
-        try{
-            const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id, {
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    'Authorization': 'Bearer '  + authToken,
+    // const getPlace = async () => {
+    //     try{
+    //         const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id, {
+    //             headers: {
+    //                 Accept: "application/json",
+    //                 "Content-Type": "application/json",
+    //                 'Authorization': 'Bearer '  + authToken,
 
-                },
-                method: "GET",
-            })
-            const resposta = await data.json();
-            if (resposta.success === true) {
-              const { data } = resposta
-                setFormulari({
-                  name : data.name,
-                  description: data.description,
-                  upload: "",
-                  latitude: data.latitude,
-                  longitude: data.longitude,
-                  visibility: data.visibility.id,
-                });
-                setIsLoading(false);
+    //             },
+    //             method: "GET",
+    //         })
+    //         const resposta = await data.json();
+    //         if (resposta.success === true) {
+    //           const { data } = resposta
+    //             setFormulari({
+    //               name : data.name,
+    //               description: data.description,
+    //               upload: "",
+    //               latitude: data.latitude,
+    //               longitude: data.longitude,
+    //               visibility: data.visibility.id,
+    //             });
+    //             setIsLoading(false);
 
-                console.log(resposta.data)
-            }
-            else console.log("There is not any place.")
-        }catch(e) {
-            console.log(e);
-            alert("Se ha producido un error.");
-        }
-    }  
+    //             console.log(resposta.data)
+    //         }
+    //         else console.log("There is not any place.")
+    //     }catch(e) {
+    //         console.log(e);
+    //         alert("Se ha producido un error.");
+    //     }
+    // }  
   
-    const handleEditPlace = async (e) => {
-      e.preventDefault();
-  
-      let {name,description,upload,latitude,longitude,visibility}=formulari;
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("upload", upload);
-      formData.append("latitude", latitude);
-      formData.append("longitude", longitude);
-      formData.append("visibility", visibility);
-  
-      try{
-        const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id, {
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + authToken 
-          },
-          method: "POST",
-          body: formData
-        });
-        const resposta = await data.json();
-        if (resposta.success === true) setMessage("Place editat correctament.");
-        else setMessage(resposta.message);
-      }catch{
-        console.log(data);
-        alert("Se ha producido un error.");
-      }
-    };
+
+    useEffect(() => {
+      dispatch(getPlace(authToken,id))  
+    }, [])
 
     useEffect (()=> {
-      getPlace();
-      handleEditPlace() 
-      navigator.geolocation.getCurrentPosition( (pos )=> {
-        setFormulari({
-          ...formulari,
-          latitude :  pos.coords.latitude,
-          longitude: pos.coords.longitude,
-          visibility: 1
+      setFormulari({
+        name: place.name,
+        description: place.description,      
+        longitude: place.longitude,      
+        latitude: place.latitude,      
+        visibility: place.visibility.id      
+      })
       
-        })
-      });
-    },[])
+    },[place])
 
     return (
       <>
@@ -145,7 +118,9 @@ const PlaceEdit = () => {
                   <br />
                   <button className="btn btn-primary"
                   onClick={(e) => {
-                      handleEditPlace(e);
+                    e.preventDefault();
+                    dispatch(editPlace(id,authToken,formulari))
+                    navigate(-1)
                   }}
                   >
                   SUBMIT PLACE

@@ -4,11 +4,14 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import { Link } from 'react-router-dom';
 import { useContext } from "react";
 import { UserContext } from "../userContext";
+import { useDispatch } from 'react-redux';
+import { deletePlace } from '../slices/places/thunks';
 
 
-const PlaceGrid = ({place,deletePlace}) => {
+const PlaceGrid = ({place}) => {
 
-    let {usuari, setUsuari} = useContext(UserContext)
+    let {authToken,setAuthToken,usuari, setUsuari} = useContext(UserContext)
+    const dispatch = useDispatch();
 
     function isOwner(place) {
         return place.author.email == usuari
@@ -31,7 +34,7 @@ const PlaceGrid = ({place,deletePlace}) => {
                     <Link className="link-secondary text-decoration-none text-uppercase" to={"/places/"+place.id}>&nbsp;VEURE&nbsp;&nbsp;</Link>
                     <Link className="link-secondary text-decoration-none text-uppercase" to={"/places/edit/"+place.id}>&nbsp;EDITAR&nbsp;&nbsp;</Link>
                     <button onClick={(() => {
-                        deletePlace(place.id)
+                        dispatch(deletePlace(place.id,authToken))
                     })}>&nbsp;ESBORRAR&nbsp;&nbsp;</button> 
                 </Card.Body>
             :   <Card.Body>

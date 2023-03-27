@@ -1,12 +1,14 @@
 import { useContext } from "react";
 import React, { useState, useEffect } from 'react';
 import { UserContext } from "../userContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addPlace } from "../slices/places/thunks";
+import { useNavigate } from "react-router-dom";
 
 const initialState= {
   name: "",
   description: "",
   upload: "",
-
   visibility: 1
 }
 
@@ -15,7 +17,12 @@ const PlaceAdd = () => {
   let {authToken,setAuthToken} = useContext(UserContext)
 
   let [formulari, setFormulari] = useState(initialState);
-  let [missatge, setMessage] = useState("");
+
+  let { missatge=""} = useSelector((state) => state.places);
+
+  const dispatch = useDispatch();
+
+  let navigate = useNavigate()
 
   
   useEffect (()=> {
@@ -31,13 +38,13 @@ const PlaceAdd = () => {
     
       })
     });  
-},[])
+  },[])
 
 
   const handleChange = (e) => {
     e.preventDefault();
 
-    setMessage("")
+    missatge=""
 
     if (e.target.type && e.target.type==="file")
       {
@@ -51,44 +58,41 @@ const PlaceAdd = () => {
           [e.target.name] : e.target.value
       })
     }
-
-    
   }
 
 
 
-  const handleAddPlace = async (e) => {
-    e.preventDefault();
+  // const handleAddPlace = async (e) => {
 
-    let {name,description,upload,latitude,longitude,visibility}=formulari;
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("upload", upload);
-    formData.append("latitude", latitude);
-    formData.append("longitude", longitude);
-    formData.append("visibility", visibility);
+  //   let {name,description,upload,latitude,longitude,visibility}=formulari;
+  //   const formData = new FormData();
+  //   formData.append("name", name);
+  //   formData.append("description", description);
+  //   formData.append("upload", upload);
+  //   formData.append("latitude", latitude);
+  //   formData.append("longitude", longitude);
+  //   formData.append("visibility", visibility);
 
-    try{
-      const data = await fetch("https://backend.insjoaquimmir.cat/api/places", {
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ' + authToken 
-        },
-        method: "POST",
-        body: formData
-      });
-      const resposta = await data.json();
-      if (resposta.success === true) {
-        setMessage("Place afegit correctament.");
-        setFormulari(initialState)
-      }
-      else setMessage(resposta.message);
-    }catch{
-      console.log(data);
-      alert("Se ha producido un error.");
-    }
-  };
+  //   try{
+  //     const data = await fetch("https://backend.insjoaquimmir.cat/api/places", {
+  //       headers: {
+  //         'Accept': 'application/json',
+  //         'Authorization': 'Bearer ' + authToken 
+  //       },
+  //       method: "POST",
+  //       body: formData
+  //     });
+  //     const resposta = await data.json();
+  //     if (resposta.success === true) {
+  //       setMessage("Place afegit correctament.");
+  //       setFormulari(initialState)
+  //     }
+  //     else setMessage(resposta.message);
+  //   }catch{
+  //     console.log(data);
+  //     alert("Se ha producido un error.");
+  //   }
+  // };
   
   return (
     <>
@@ -124,7 +128,9 @@ const PlaceAdd = () => {
             <br />
             <button className="btn btn-primary"
             onClick={(e) => {
-              handleAddPlace(e);
+              e.preventDefault();
+              dispatch(addPlace(formulari,authToken));
+              navigate(-1)
             }}
             >
             CREATE PLACE

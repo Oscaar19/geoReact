@@ -2,10 +2,13 @@ import React from 'react'
 import { useContext } from "react";
 import { UserContext } from "../userContext";
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { deletePlace } from '../slices/places/thunks';
 
 
-const PlaceList = ({place,deletePlace}) => {
-  let {usuari, setUsuari} = useContext(UserContext)
+const PlaceList = ({place}) => {
+  let {authToken,setAuthToken,usuari, setUsuari} = useContext(UserContext)
+  const dispatch = useDispatch();
 
   function isOwner(place) {
     return place.author.email == usuari
@@ -24,7 +27,7 @@ const PlaceList = ({place,deletePlace}) => {
           <>
             <td><Link to={"/places/"+place.id}><svg width="25px" height="25px" viewBox="0 0 1024 1024" className="icon"  version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M512 832C246.656 832 74.026667 535.210667 66.816 522.581333a21.354667 21.354667 0 0 1-0.042667-21.12C73.941333 488.874667 245.312 192 512 192c265.322667 0 437.973333 296.789333 445.184 309.418667a21.290667 21.290667 0 0 1-0.042667 21.226666C949.888 535.274667 775.957333 832 512 832z" fill="#E6E6E6" /><path d="M512 512m-234.666667 0a234.666667 234.666667 0 1 0 469.333334 0 234.666667 234.666667 0 1 0-469.333334 0Z" fill="#43A6DD" /><path d="M512 512m-128 0a128 128 0 1 0 256 0 128 128 0 1 0-256 0Z" fill="#444444" /><path d="M416 437.333333m-53.333333 0a53.333333 53.333333 0 1 0 106.666666 0 53.333333 53.333333 0 1 0-106.666666 0Z" fill="#FFFFFF" /></svg></Link></td>
             <td><Link to={"/places/edit/"+place.id}><svg fill="#000000" version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 
-              width="25px" height="25px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+              width="25px" height="25px" viewBox="0 0 64 64" enableBackground="new 0 0 64 64" xmlSpace="preserve">
               <g>
                   <path d="M3.161,63.357c0.471,0,0.968-0.115,1.479-0.342l14.346-6.376c1.234-0.549,2.887-1.684,3.843-2.64L62,14.829
                       c0.754-0.754,1.17-1.759,1.17-2.829S62.754,9.925,62,9.172l-7.172-7.173C54.074,1.246,53.07,0.831,52,0.831S49.926,1.246,49.172,2
@@ -36,7 +39,7 @@ const PlaceList = ({place,deletePlace}) => {
               </svg></Link>
             </td>
             <td><button onClick={((e) => {
-              deletePlace(e,place.id)
+              dispatch(deletePlace(place.id,authToken))
             })}><svg fill="#000000" width="25px" height="25px" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" id="memory-trash"><path d="M10 7V16H8V7H10M12 7H14V16H12V7M8 2H14V3H19V5H18V19H17V20H5V19H4V5H3V3H8V2M6 5V18H16V5H6Z" /></svg></button></td>
           </>
           :

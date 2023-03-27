@@ -6,44 +6,48 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import useFetch from "../hooks/useFetch";
+import { useDispatch, useSelector } from "react-redux";
+import { getPlaces } from "../slices/places/thunks";
+import PlaceAdd from "./PlaceAdd";
 
 export default function PlacesGrid() {
-    let {authToken,setAuthToken} = useContext(UserContext)
-    let {usuari, setUsuari} = useContext(UserContext)
-    let [missatge, setMessage] = useState("");
+    let {authToken,setAuthToken,usuari, setUsuari} = useContext(UserContext)
+    const { places = [], page=0, isLoading=true, missatge="",adding=false} = useSelector((state) => state.places);
+    const dispatch = useDispatch();
 
 
-    let { data, error, loading,reRender } = useFetch("https://backend.insjoaquimmir.cat/api/places", {
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            'Authorization': 'Bearer '  + authToken,
-        },
-        method: "GET",
+    // let { data, error, loading,reRender } = useFetch("https://backend.insjoaquimmir.cat/api/places", {
+    //     headers: {
+    //         Accept: "application/json",
+    //         "Content-Type": "application/json",
+    //         'Authorization': 'Bearer '  + authToken,
+    //     },
+    //     method: "GET",
         
-    })
+    // })
 
 
-    const deletePlace = async (id) => {
-        try{
-            const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id, {
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    'Authorization': 'Bearer '  + authToken,
-                },
-                method: "DELETE",
-            })
-            const resposta = await data.json();
-            if (resposta.success === true) {
-                reRender()
-            }
-            setMessage(resposta.message)
-        }catch(e) {
-            console.log(e);
-            alert("Se ha producido un error.");
-        }
-    }
+    // const deletePlace = async (id) => {
+    //     try{
+    //         const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id, {
+    //             headers: {
+    //                 Accept: "application/json",
+    //                 "Content-Type": "application/json",
+    //                 'Authorization': 'Bearer '  + authToken,
+    //             },
+    //             method: "DELETE",
+    //         })
+    //         const resposta = await data.json();
+    //         setMessage(resposta.message)
+    //     }catch(e) {
+    //         console.log(e);
+    //         alert("Se ha producido un error.");
+    //     }
+    // }
+
+    useEffect(() => {
+        dispatch(getPlaces(0,authToken,usuari));        
+    }, []);
 
 
 
@@ -57,12 +61,13 @@ export default function PlacesGrid() {
 
     return (
         <>
-            { loading ? (<div> Cargando ...</div>) : ( 
+            { isLoading ? (<div> Cargando ...</div>) : ( 
+                (adding ? <PlaceAdd></PlaceAdd> : ""),
                 <Container className="bg-secondary mw-100">
                     <Row>
-                        {data.data.map ((place) => ( 
+                        {places.map ((place) => ( 
                             (isPublic(place) || isOwner(place)) ?
-                                <Col sm><PlaceGrid place={place}  deletePlace={deletePlace}/></Col>
+                                <Col sm><PlaceGrid place={place}/></Col>
                             : ""
                         ))}
                     </Row>
