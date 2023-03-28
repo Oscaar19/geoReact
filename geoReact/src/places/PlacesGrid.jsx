@@ -9,6 +9,7 @@ import useFetch from "../hooks/useFetch";
 import { useDispatch, useSelector } from "react-redux";
 import { getPlaces } from "../slices/places/thunks";
 import PlaceAdd from "./PlaceAdd";
+import Paginate from "../pages/Paginate";
 
 export default function PlacesGrid() {
     let {authToken,setAuthToken,usuari, setUsuari} = useContext(UserContext)
@@ -46,8 +47,9 @@ export default function PlacesGrid() {
     // }
 
     useEffect(() => {
-        dispatch(getPlaces(0,authToken,usuari));        
-    }, []);
+        dispatch(getPlaces(page,authToken));        
+    }, [page]);
+
 
 
 
@@ -63,15 +65,18 @@ export default function PlacesGrid() {
         <>
             { isLoading ? (<div> Cargando ...</div>) : ( 
                 (adding ? <PlaceAdd></PlaceAdd> : ""),
-                <Container className="bg-secondary mw-100">
-                    <Row>
-                        {places.map ((place) => ( 
-                            (isPublic(place) || isOwner(place)) ?
-                                <Col sm><PlaceGrid place={place}/></Col>
-                            : ""
-                        ))}
-                    </Row>
-                </Container>
+                <>
+                    <Container className="bg-secondary mw-100">
+                        <Row>
+                            {places.map ((place) => ( 
+                                (isPublic(place) || isOwner(place)) ?
+                                    <Col sm><PlaceGrid place={place}/></Col>
+                                : ""
+                            ))}
+                        </Row>
+                        <Paginate/>
+                    </Container>
+                </>                
             )}
         </>
     )
