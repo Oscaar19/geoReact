@@ -18,6 +18,7 @@ const initialState = {
     favorite: false,
     page: 1,
     pages: [],
+    filter: { description: "", author: ""},
 }
 
 export const placeSlice = createSlice({
@@ -69,11 +70,17 @@ export const placeSlice = createSlice({
 
             state.pages = action.payload
             
-        }
+        },
+
+        setFilter: (state,action) => {
+
+            state.filter = action.payload
+            
+        },
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { startLoadingPlaces, setPlaces,setMissatge,setPlace,setFormulari,setAdding,setFavorite,setPage,setPages } = placeSlice.actions
+export const { startLoadingPlaces, setPlaces,setMissatge,setPlace,setFormulari,setAdding,setFavorite,setPage,setPages,setFilter } = placeSlice.actions
 
 export default placeSlice.reducer

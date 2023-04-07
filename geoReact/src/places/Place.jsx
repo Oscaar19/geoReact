@@ -28,56 +28,6 @@ const Place = () => {
         return place.author.email == usuari
     }
 
-    // const favPlace = async () => {
-    //     try{
-    //         const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id+"/favorites", {
-    //             headers: {
-    //                 Accept: "application/json",
-    //                 "Content-Type": "application/json",
-    //                 'Authorization': 'Bearer '  + authToken,
-
-    //             },
-    //             method: "POST",
-    //         })
-    //         const resposta = await data.json();
-    //         if (resposta.success === true) {
-    //             setFavorite(true)
-    //             setPlace({...place,favorites_count:place.favorites_count+1})
-    //         }
-    //     }catch(e) {
-    //         console.log(e);
-    //         alert("Se ha producido un error.");
-    //     }
-    // }
-
-    // const unfavPlace = async () => {
-    //     try{
-
-    //         try{
-    //             const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id+"/favorites", {
-    //                 headers: {
-    //                     Accept: "application/json",
-    //                     "Content-Type": "application/json",
-    //                     'Authorization': 'Bearer '  + authToken,
-    
-    //                 },
-    //                 method: "DELETE",
-    //             })
-    //             const resposta = await data.json();
-    //             if (resposta.success === true) {
-    //                 setFavorite(false)
-    //                 setPlace({...place,favorites_count:place.favorites_count-1})
-    //             }
-    //         }catch(e) {
-    //             console.log(e);
-    //             alert("Se ha producido un error.");
-    //         }
-            
-    //     }catch(e) {
-    //         console.log(e);
-    //         alert("Se ha producido un error.");
-    //     }
-    // }
 
     const markPlace = (place) => {
         console.log("Afegeixo");
@@ -99,63 +49,9 @@ const Place = () => {
         )
     };
 
-    
-    // const getPlace = async () => {
-    //     try{
-    //         const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id, {
-    //             headers: {
-    //                 Accept: "application/json",
-    //                 "Content-Type": "application/json",
-    //                 'Authorization': 'Bearer '  + authToken,
 
-    //             },
-    //             method: "GET",
-    //         })
-    //         const resposta = await data.json();
-    //         if (resposta.success === true) {
-    //             setPlace(resposta.data);
-    //             setIsLoading(false);
-    //         }
-    //         else console.log("There is not any place.")
-    //     }catch(e) {
-    //         console.log(e);
-    //         alert("Se ha producido un error.");
-    //     }
-    // }
-
-    // const testFavorite = async () => {
-    //     try{
-    //         const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id+"/favorites", {
-    //             headers: {
-    //                 Accept: "application/json",
-    //                 "Content-Type": "application/json",
-    //                 'Authorization': 'Bearer '  + authToken,
-
-    //             },
-    //             method: "POST",
-    //         })
-    //         const resposta = await data.json();
-    //         if (resposta.success === true) {
-    //             const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id+"/favorites", {
-    //                 headers: {
-    //                     Accept: "application/json",
-    //                     "Content-Type": "application/json",
-    //                     'Authorization': 'Bearer '  + authToken,
-    
-    //                 },
-    //                 method: "DELETE",
-    //             })
-    //         }else{
-    //             setFavorite(true)
-    //         }
-    //     }catch(e) {
-    //         console.log(e);
-    //         alert("Se ha producido un error.");
-    //     }
-    // }
     useEffect(() => {
         dispatch(getPlace(authToken,id));
-//        dispatch(testFavorite(authToken,id))
         dispatch(ismarked(id))
         localStorage.setItem("marks", JSON.stringify(marks));
     }, [marks])

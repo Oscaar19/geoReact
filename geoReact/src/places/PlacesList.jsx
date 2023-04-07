@@ -10,57 +10,12 @@ export default function PlacesList() {
     let {authToken,setAuthToken,usuari, setUsuari} = useContext(UserContext)
     const { places = [], page=0, isLoading=true, missatge=""} = useSelector((state) => state.places);
     const dispatch = useDispatch();
-
-    // const getPlaces = async () => {
-        
-    //     try{
-    //         const data = await fetch("https://backend.insjoaquimmir.cat/api/places", {
-    //             headers: {
-    //                 Accept: "application/json",
-    //                 "Content-Type": "application/json",
-    //                 'Authorization': 'Bearer '  + authToken,
-    //             },
-    //             method: "GET",
-    //         })
-    //         const resposta = await data.json();
-    //         if (resposta.success === true) {
-    //             setPlaces(resposta.data);
-    //         }
-    //         else console.log("There is not any place.")
-    //     }catch(e) {
-    //         console.log(e);
-    //         alert("Se ha producido un error.");
-    //     }
-    // }
-
-    // const deletePlace = async (e,id) => {
-    //     e.preventDefault();
-    //     try{
-    //         const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id, {
-    //             headers: {
-    //                 Accept: "application/json",
-    //                 "Content-Type": "application/json",
-    //                 'Authorization': 'Bearer '  + authToken,
-    //             },
-    //             method: "DELETE",
-    //         })
-    //         const resposta = await data.json();
-    //         if (resposta.success === true) {
-    //             setRefresh(!refresh);
-    //         }
-    //         setMessage(resposta.message)
-    //     }catch(e) {
-    //         console.log(e);
-    //         alert("Se ha producido un error.");
-    //     }
-    // }
+    const {filter} = useSelector((state) => state.places)
 
     useEffect(() => {
         dispatch(getPlaces(0,authToken,usuari));     
-        return () => {
-            dispatch(startLoadingPlaces())
-          };   
-    }, []);
+        dispatch(startLoadingPlaces())   
+    }, [filter]);
 
     function isPublic(place) {
         return place.visibility.name == "public"

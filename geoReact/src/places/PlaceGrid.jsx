@@ -4,14 +4,16 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import { Link } from 'react-router-dom';
 import { useContext } from "react";
 import { UserContext } from "../userContext";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { deletePlace } from '../slices/places/thunks';
+import { setFilter } from '../slices/places/placeSlice';
 
 
 const PlaceGrid = ({place}) => {
-
+    console.log(place)
     let {authToken,setAuthToken,usuari, setUsuari} = useContext(UserContext)
     const dispatch = useDispatch();
+    const {filter} = useSelector((state) => state.places)
 
     function isOwner(place) {
         return place.author.email == usuari
@@ -37,9 +39,16 @@ const PlaceGrid = ({place}) => {
                         dispatch(deletePlace(place.id,authToken))
                     })}>&nbsp;ESBORRAR&nbsp;&nbsp;</button> 
                 </Card.Body>
-            :   <Card.Body>
+            :   <>
+                <Card.Body>
                     <Link className="link-secondary text-decoration-none text-uppercase" to={"/places/"+place.id}>&nbsp;VEURE&nbsp;&nbsp;</Link>
                 </Card.Body>
+                <button onClick={((e) => {
+                    e.preventDefault;
+                    dispatch(setFilter({...filter,author:place.author.id}))
+                })}>&nbsp;VEURE PLACES D'AQUEST USUARI&nbsp;&nbsp;</button>
+                </>
+
             }
             
         </Card>

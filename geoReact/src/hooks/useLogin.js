@@ -3,8 +3,7 @@ import { UserContext } from '../userContext'
 
 const useLogin = () => {
 
-    let {authToken,setAuthToken} = useContext(UserContext)
-    let {usuari, setUsuari} = useContext(UserContext)
+    let {authToken,setAuthToken,usuari, setUsuari,idUser, setIdUser} = useContext(UserContext)
     const [error, setError] = useState();
 
     const checkAuthToken = async () => {
@@ -20,9 +19,11 @@ const useLogin = () => {
           });
 
           const resposta = await data.json();
+          console.log(resposta)
           if (resposta.success === true) {
             setAuthToken(myToken);
             setUsuari(resposta.user.email)
+            setIdUser(resposta.user.id)
           }
         }
         else{

@@ -1,4 +1,4 @@
-import { setMissatge, setPlaces, startLoadingPlaces, setPlace,setFavorite, setPages } from './placeSlice'
+import { setMissatge, setPlaces, startLoadingPlaces, setPlace,setFavorite, setPages, setFilter } from './placeSlice'
 
 
 export const getPlaces = (page = 0,authToken) => {
@@ -23,11 +23,19 @@ export const getPlaces = (page = 0,authToken) => {
 
         };
 
-        const url =
+        const filtre = getState().places.filter
+
+        let url =
         page > 0
         ? "https://backend.insjoaquimmir.cat/api/places?paginate=1&page=" + page
         : "https://backend.insjoaquimmir.cat/api/places";
 
+        let inter = page > 0 ? "&" : "?"
+        let description = filtre.description == "" ? "" : "description="+filtre.description
+        let author = filtre.author == "" ? "" : "author="+filtre.author
+
+        url = url + inter + description + "&" + author
+        console.log(url)
         const data = await fetch(url, headers);
  
         const resposta = await data.json();
@@ -39,9 +47,7 @@ export const getPlaces = (page = 0,authToken) => {
                 dispatch(setPlaces(resposta.data.collection));
                 
                 dispatch(setPages(resposta.data.links));
-                
-                console.log(resposta.data.links);
-                
+                                
             } else {
                 
                 dispatch(setPlaces(resposta.data));

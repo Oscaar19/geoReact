@@ -13,42 +13,12 @@ import Paginate from "../pages/Paginate";
 
 export default function PlacesGrid() {
     let {authToken,setAuthToken,usuari, setUsuari} = useContext(UserContext)
-    const { places = [], page=0, isLoading=true, missatge="",adding=false} = useSelector((state) => state.places);
+    const { places = [], page=0, isLoading=true, missatge="",adding=false,filter} = useSelector((state) => state.places);
     const dispatch = useDispatch();
-
-
-    // let { data, error, loading,reRender } = useFetch("https://backend.insjoaquimmir.cat/api/places", {
-    //     headers: {
-    //         Accept: "application/json",
-    //         "Content-Type": "application/json",
-    //         'Authorization': 'Bearer '  + authToken,
-    //     },
-    //     method: "GET",
-        
-    // })
-
-
-    // const deletePlace = async (id) => {
-    //     try{
-    //         const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id, {
-    //             headers: {
-    //                 Accept: "application/json",
-    //                 "Content-Type": "application/json",
-    //                 'Authorization': 'Bearer '  + authToken,
-    //             },
-    //             method: "DELETE",
-    //         })
-    //         const resposta = await data.json();
-    //         setMessage(resposta.message)
-    //     }catch(e) {
-    //         console.log(e);
-    //         alert("Se ha producido un error.");
-    //     }
-    // }
 
     useEffect(() => {
         dispatch(getPlaces(page,authToken));        
-    }, [page]);
+    }, [page,filter]);
 
 
 

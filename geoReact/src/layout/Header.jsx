@@ -43,6 +43,7 @@ export default function Header() {
                 method: "GET",
             })
             const resposta = await data.json();
+            console.log(resposta)
             if (resposta.success === true) {
                 setUserName(resposta.user.name);
                 setRoles(resposta.roles);

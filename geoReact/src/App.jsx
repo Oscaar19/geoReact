@@ -26,6 +26,7 @@ const App = () => {
 
   let [authToken, setAuthToken] = useState("");
   let [usuari, setUsuari] = useState("");
+  let [idUser, setIdUser] = useState("");
 
   const todosCollectionRef =collection(db,"todos")
   const marksCollectionRef =collection(db,"placesMarks")
@@ -55,7 +56,7 @@ const App = () => {
 
   return (
     <>
-      <UserContext.Provider value= { { usuari, setUsuari,authToken,setAuthToken }}>
+      <UserContext.Provider value= { { usuari, setUsuari,authToken,setAuthToken,idUser, setIdUser }}>
         {authToken ? (
           <>
             <Header />
