@@ -8,7 +8,7 @@ import { startLoadingPlaces } from "../slices/places/placeSlice";
 
 export default function PlacesList() {
     let {authToken,setAuthToken,usuari, setUsuari} = useContext(UserContext)
-    const { places = [], page=0, isLoading=true, missatge=""} = useSelector((state) => state.places);
+    const { places = []} = useSelector((state) => state.places);
     const dispatch = useDispatch();
     const {filter} = useSelector((state) => state.places)
 
@@ -17,10 +17,21 @@ export default function PlacesList() {
         dispatch(startLoadingPlaces())   
     }, [filter]);
 
+
+    /**
+        * Return if the place visibility is public
+        * @param {Object} place place
+        * @returns {Boolean} If it's public or not
+        */
     function isPublic(place) {
         return place.visibility.name == "public"
     }
 
+    /**
+        * Return if the author of the place given is the logged in user
+        * @param {Object} place place
+        * @returns {Boolean} - If it's the author or not
+        */
     function isOwner(place) {
         return place.author.name == usuari
     }

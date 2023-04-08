@@ -6,6 +6,8 @@ const useLogin = () => {
     let {authToken,setAuthToken,usuari, setUsuari,idUser, setIdUser} = useContext(UserContext)
     const [error, setError] = useState();
 
+
+    /** @function checkAuthToken */
     const checkAuthToken = async () => {
         let myToken =localStorage.getItem("authToken") || ""
         if(myToken.length > 0){
@@ -31,6 +33,11 @@ const useLogin = () => {
         }
     }
 
+    /**
+      * Makes the login with the given credentials and set a new authToken
+      * @param {string} email email
+      * @param {string} password password
+      */
     const sendLogin = async (email, password) => {
         try {
           const data = await fetch("https://backend.insjoaquimmir.cat/api/login", {

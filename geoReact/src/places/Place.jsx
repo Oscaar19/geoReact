@@ -15,24 +15,46 @@ import { favPlace, getPlace, testFavorite, unfavPlace } from '../slices/places/t
 
 const Place = () => {
 
+    
     const {marks,isMarked} = useSelector(state => state.marks)
     const { reviewsCount=0} = useSelector((state) => state.reviews);
     const { place, isLoading=true,favorite} = useSelector((state) => state.places);
     const dispatch = useDispatch();
+
+    /**
+        * Place pathname
+        * @const {string}
+        */
     const { pathname } = useLocation()
+
+
+    /**
+        * Place id
+        * @const {number}
+        */
     const { id } = useParams();
+
     let { authToken, setAuthToken,usuari, setUsuari } = useContext(UserContext);
 
-
+    /**
+        * Return if the author of the place given is the logged in user
+        * @param {Object} place place
+        * @returns {Boolean} - If it's the author or not
+        */
     function isOwner(place) {
         return place.author.email == usuari
     }
 
-
+    /**
+        * Mark the place given to a list of the favorite ones
+        * @param {Object} place place
+        */
     const markPlace = (place) => {
-        console.log("Afegeixo");
-        console.log({ place });
 
+        /**
+            * Mark Object
+            * @type {{id: number, name: string, description: string, ruta: string}}
+            */
         const mark = {
             id: place.id,
             name: place.name,

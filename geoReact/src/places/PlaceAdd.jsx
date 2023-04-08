@@ -16,8 +16,16 @@ const PlaceAdd = () => {
 
   let {authToken,setAuthToken} = useContext(UserContext)
 
+  /**
+    * This is the variable that has the current value of formulari and change it.
+    * @type {useState}
+    */
   let [formulari, setFormulari] = useState(initialState);
 
+  /**
+    * Variable missatge current value
+    * @const {string}
+    */
   let { missatge=""} = useSelector((state) => state.places);
 
   const dispatch = useDispatch();
@@ -59,40 +67,6 @@ const PlaceAdd = () => {
       })
     }
   }
-
-
-
-  // const handleAddPlace = async (e) => {
-
-  //   let {name,description,upload,latitude,longitude,visibility}=formulari;
-  //   const formData = new FormData();
-  //   formData.append("name", name);
-  //   formData.append("description", description);
-  //   formData.append("upload", upload);
-  //   formData.append("latitude", latitude);
-  //   formData.append("longitude", longitude);
-  //   formData.append("visibility", visibility);
-
-  //   try{
-  //     const data = await fetch("https://backend.insjoaquimmir.cat/api/places", {
-  //       headers: {
-  //         'Accept': 'application/json',
-  //         'Authorization': 'Bearer ' + authToken 
-  //       },
-  //       method: "POST",
-  //       body: formData
-  //     });
-  //     const resposta = await data.json();
-  //     if (resposta.success === true) {
-  //       setMessage("Place afegit correctament.");
-  //       setFormulari(initialState)
-  //     }
-  //     else setMessage(resposta.message);
-  //   }catch{
-  //     console.log(data);
-  //     alert("Se ha producido un error.");
-  //   }
-  // };
   
   return (
     <>

@@ -33,7 +33,6 @@ export default function Register({ setCanvi }) {
           "Content-Type": "application/json"
         },
         method: "POST",
-        // Si els noms i les variables coincideix, podem simplificar
         body: JSON.stringify({ name, email, password })
       });
       const resposta = await data.json();

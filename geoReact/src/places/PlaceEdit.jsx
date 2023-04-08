@@ -34,39 +34,7 @@ const PlaceEdit = () => {
   
       
     }
-
-    // const getPlace = async () => {
-    //     try{
-    //         const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id, {
-    //             headers: {
-    //                 Accept: "application/json",
-    //                 "Content-Type": "application/json",
-    //                 'Authorization': 'Bearer '  + authToken,
-
-    //             },
-    //             method: "GET",
-    //         })
-    //         const resposta = await data.json();
-    //         if (resposta.success === true) {
-    //           const { data } = resposta
-    //             setFormulari({
-    //               name : data.name,
-    //               description: data.description,
-    //               upload: "",
-    //               latitude: data.latitude,
-    //               longitude: data.longitude,
-    //               visibility: data.visibility.id,
-    //             });
-    //             setIsLoading(false);
-
-    //             console.log(resposta.data)
-    //         }
-    //         else console.log("There is not any place.")
-    //     }catch(e) {
-    //         console.log(e);
-    //         alert("Se ha producido un error.");
-    //     }
-    // }  
+ 
   
 
     useEffect(() => {
