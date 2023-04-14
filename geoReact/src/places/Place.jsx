@@ -11,7 +11,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addmark, ismarked } from '../slices/placeMarkSlice';
 import { favPlace, getPlace, testFavorite, unfavPlace } from '../slices/places/thunks';
 
-
+/**
+    * Component que mostra informació d'un place en concret.
+    *
+    * @component Place
+    */
 
 const Place = () => {
 
@@ -22,22 +26,21 @@ const Place = () => {
     const dispatch = useDispatch();
 
     /**
-        * Place pathname
-        * @const {string}
+        * @const {string} pathname
         */
     const { pathname } = useLocation()
 
 
     /**
-        * Place id
-        * @const {number}
+        * @const {number} id
         */
     const { id } = useParams();
 
     let { authToken, setAuthToken,usuari, setUsuari } = useContext(UserContext);
 
     /**
-        * Return if the author of the place given is the logged in user
+        * Return if the author of the place given is the logged in user 
+        * @function isOwner
         * @param {Object} place place
         * @returns {Boolean} - If it's the author or not
         */

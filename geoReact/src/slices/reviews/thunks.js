@@ -102,10 +102,13 @@ export const delReview = (review, authToken) => {
 
 };
 
-export const addReview = (review,id,authToken) => {
+export const addReview = (data,authToken,id) => {
+
+    const {review} = data
 
     return async (dispatch,getState) => {
 
+        
         const formData = new FormData();
 
         formData.append("review", review);

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: places/PlaceAdd.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: places/PlaceAdd.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useContext } from "react";
+import React, { useState, useEffect } from 'react';
+import { UserContext } from "../userContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addPlace } from "../slices/places/thunks";
+import { useNavigate } from "react-router-dom";
+
+
+/**
+  * Constant with the empty object to restart the form.
+  * @const {Object}
+  */
+const initialState= {
+  name: "",
+  description: "",
+  upload: "",
+  visibility: 1
+}
+
+/**
+    * This component makes the adding operations and show the form to send the information.
+    */
+
+const PlaceAdd = () => {
+
+  let {authToken,setAuthToken} = useContext(UserContext)
+
+  /**
+    * This is the variable that has the current value of formulari and change it.
+    * @type {useState}
+    */
+  let [formulari, setFormulari] = useState(initialState);
+
+  /**
+    * Variable missatge current value
+    * @const {string}
+    */
+  let { missatge=""} = useSelector((state) => state.places);
+
+  const dispatch = useDispatch();
+
+  let navigate = useNavigate()
+
+  
+  useEffect (()=> {
+    navigator.geolocation.getCurrentPosition( (pos )=> {
+
+      //setLat(pos.coords.latitude)
+
+      setFormulari({
+        ...formulari,
+        latitude :  pos.coords.latitude,
+        longitude: pos.coords.longitude,
+        visibility: 1
+    
+      })
+    });  
+  },[])
+
+
+  const handleChange = (e) => {
+    e.preventDefault();
+
+    missatge=""
+
+    if (e.target.type &amp;&amp; e.target.type==="file")
+      {
+        setFormulari({
+          ...formulari,
+          [e.target.name] : e.target.files[0] 
+        })
+      } else {
+        setFormulari({
+          ...formulari,
+          [e.target.name] : e.target.value
+      })
+    }
+  }
+  
+  return (
+    &lt;>
+      &lt;div className="container bg-secondary mw-100 h-100 d-flex justify-content-center">
+        &lt;div>
+          &lt;div className="container">
+            &lt;h1>Add a place&lt;/h1>
+          &lt;/div>
+          &lt;form>
+            &lt;input className="sr-only" name="name" value={formulari.name} type="text" placeholder="Name" onChange={handleChange} />
+            &lt;br />
+            &lt;br />
+            &lt;input name="description" value={formulari.description} type="text" placeholder="Description" onChange={handleChange} />
+            &lt;br />
+            &lt;br />
+            &lt;input name="upload" type="file" onChange={handleChange} />
+            &lt;br />
+            &lt;br />
+            &lt;input name="latitude" value={formulari.latitude} type="text" onChange={handleChange} />
+            &lt;br />
+            &lt;br />
+            &lt;input name="longitude" value={formulari.longitude} type="text" onChange={handleChange} />
+            &lt;br />
+            &lt;br />
+            &lt;select onChange={handleChange} name="visibility" value={formulari.visibility} className="form-control">
+              &lt;option value="1">Public&lt;/option>
+              &lt;option value="2">Private&lt;/option>
+              &lt;option value="3">Contacts&lt;/option>
+            &lt;/select>
+            &lt;br />
+            &lt;br />
+            {missatge ? &lt;div>{missatge}&lt;/div> : &lt;>&lt;/>}
+            &lt;br />
+            &lt;button className="btn btn-primary"
+            onClick={(e) => {
+              e.preventDefault();
+              dispatch(addPlace(formulari,authToken));
+              navigate(-1)
+            }}
+            >
+            CREATE PLACE
+            &lt;/button>
+          &lt;/form>
+        &lt;/div>
+      &lt;/div>
+    &lt;/>
+  )
+}
+
+export default PlaceAdd
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Place">Place</a></li><li><a href="global.html#PlaceAdd">PlaceAdd</a></li><li><a href="global.html#checkAuthToken">checkAuthToken</a></li><li><a href="global.html#id">id</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#isOwner">isOwner</a></li><li><a href="global.html#pathname">pathname</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Apr 12 2023 17:54:40 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

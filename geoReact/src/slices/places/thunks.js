@@ -35,7 +35,7 @@ export const getPlaces = (page = 0,authToken) => {
         let author = filtre.author == "" ? "" : "author="+filtre.author
 
         url = url + inter + description + "&" + author
-        console.log(url)
+        
         const data = await fetch(url, headers);
  
         const resposta = await data.json();

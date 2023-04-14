@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: places/Place.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: places/Place.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect,useContext, useReducer } from 'react';
+import {useLocation, useParams } from 'react-router-dom';
+import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
+import { Link } from 'react-router-dom';
+import { UserContext } from '../userContext';
+import ReviewsList from './reviews/ReviewsList';
+import Button from 'react-bootstrap/esm/Button';
+import Swal from 'sweetalert2'
+import { useDispatch, useSelector } from 'react-redux';
+import { addmark, ismarked } from '../slices/placeMarkSlice';
+import { favPlace, getPlace, testFavorite, unfavPlace } from '../slices/places/thunks';
+
+/**
+    * Component que mostra informació d'un place en concret.
+    *
+    * @component Place
+    */
+
+const Place = () => {
+
+    
+    const {marks,isMarked} = useSelector(state => state.marks)
+    const { reviewsCount=0} = useSelector((state) => state.reviews);
+    const { place, isLoading=true,favorite} = useSelector((state) => state.places);
+    const dispatch = useDispatch();
+
+    /**
+        * @const {string} pathname
+        */
+    const { pathname } = useLocation()
+
+
+    /**
+        * @const {number} id
+        */
+    const { id } = useParams();
+
+    let { authToken, setAuthToken,usuari, setUsuari } = useContext(UserContext);
+
+    /**
+        * Return if the author of the place given is the logged in user 
+        * @function isOwner
+        * @param {Object} place place
+        * @returns {Boolean} - If it's the author or not
+        */
+    function isOwner(place) {
+        return place.author.email == usuari
+    }
+
+    /**
+        * Mark the place given to a list of the favorite ones
+        * @param {Object} place place
+        */
+    const markPlace = (place) => {
+
+        /**
+            * Mark Object
+            * @type {{id: number, name: string, description: string, ruta: string}}
+            */
+        const mark = {
+            id: place.id,
+            name: place.name,
+            description: place.description,
+            ruta: pathname
+        };
+
+        dispatch(addmark(mark))
+
+        Swal.fire(
+            'Bé!',
+            'Has desat aquest place!.',
+            'success'
+        )
+    };
+
+
+    useEffect(() => {
+        dispatch(getPlace(authToken,id));
+        dispatch(ismarked(id))
+        localStorage.setItem("marks", JSON.stringify(marks));
+    }, [marks])
+
+ 
+
+    return (
+        &lt;>
+
+        { isLoading  ? (&lt;div> Me cargo ....&lt;/div>) : ( 
+            &lt;Container className="mw-100 mh-100 bg-secondary">
+                &lt;br />
+                &lt;Card className="bg-dark text-white mx-auto w-50 p-3" style={{ width: '18rem' }}>
+                    &lt;Card.Img width="100px" height="200px" variant="top" src={"https://backend.insjoaquimmir.cat/storage/"+ place.file.filepath}/>
+                    &lt;Card.Body>
+                        &lt;Card.Title>{place.name}&lt;/Card.Title>
+                        &lt;br />
+                        &lt;Card.Subtitle>Autor: {place.author.name}&lt;/Card.Subtitle>
+                        &lt;br />
+                        &lt;Card.Text>{place.description}&lt;/Card.Text>
+                        &lt;Card.Text>{place.favorites_count} 
+                            { !favorite ? (&lt;button type="button" className="btn btn-link text-white" onClick={(() => {
+                                dispatch(favPlace(id,authToken,place))
+                            })}>&lt;svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                    &lt;path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                &lt;/svg>&lt;/button>) 
+                            : ( &lt;button type="button" className="btn btn-link text-white" onClick={(() => {
+                                dispatch(unfavPlace(id,authToken,place))
+                            })}>&lt;svg width="25px" height="25px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" className="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet">&lt;path fill="#DD2E44" d="M35.885 11.833c0-5.45-4.418-9.868-9.867-9.868c-3.308 0-6.227 1.633-8.018 4.129c-1.791-2.496-4.71-4.129-8.017-4.129c-5.45 0-9.868 4.417-9.868 9.868c0 .772.098 1.52.266 2.241C1.751 22.587 11.216 31.568 18 34.034c6.783-2.466 16.249-11.447 17.617-19.959c.17-.721.268-1.469.268-2.242z">&lt;/path>&lt;/svg>&lt;/button>)
+                            }
+                        &lt;/Card.Text>  
+                        &lt;Card.Text>Hi ha un total de {reviewsCount} ressenyes.&lt;/Card.Text>
+
+                    &lt;/Card.Body>
+                    {(isOwner(place)) ?                        
+                        &lt;Card.Body>
+                            &lt;Link className="link-secondary text-decoration-none text-uppercase" to={"/places/"+place.id}>&amp;nbsp;VEURE&amp;nbsp;&amp;nbsp;&lt;/Link>
+                            &lt;Link className="link-secondary text-decoration-none text-uppercase" to={"/places/edit/"+place.id}>&amp;nbsp;EDITAR&amp;nbsp;&amp;nbsp;&lt;/Link>
+                        &lt;/Card.Body>
+                    :  
+                        (isMarked ? &lt;>&lt;/> 
+                        :
+                            (&lt;Card.Body>
+                                &lt;Button variant="warning" onClick={() => markPlace(place)}>DESAR&lt;/Button>
+                            &lt;/Card.Body>)
+                        )
+                        
+                    }
+                    
+                &lt;/Card>
+                &lt;div>&lt;ReviewsList id={place.id} reviews_count={place.reviews_count}/>&lt;/div>
+            &lt;/Container>
+        )}
+        &lt;/>
+    )
+}
+
+export default Place
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#Place">Place</a></li><li><a href="global.html#PlaceAdd">PlaceAdd</a></li><li><a href="global.html#checkAuthToken">checkAuthToken</a></li><li><a href="global.html#id">id</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#isOwner">isOwner</a></li><li><a href="global.html#pathname">pathname</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Apr 12 2023 17:54:40 GMT+0200 (hora de verano de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

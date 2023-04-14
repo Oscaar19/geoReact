@@ -4,7 +4,13 @@ import { UserContext } from "../userContext";
 import { useDispatch, useSelector } from "react-redux";
 import { addPlace } from "../slices/places/thunks";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
+
+/**
+  * Constant with the empty object to restart the form.
+  * @const {Object}
+  */
 const initialState= {
   name: "",
   description: "",
@@ -12,9 +18,15 @@ const initialState= {
   visibility: 1
 }
 
+/**
+    * This component makes the adding operations and show the form to send the information.
+    */
+
 const PlaceAdd = () => {
 
   let {authToken,setAuthToken} = useContext(UserContext)
+
+  
 
   /**
     * This is the variable that has the current value of formulari and change it.
@@ -32,19 +44,21 @@ const PlaceAdd = () => {
 
   let navigate = useNavigate()
 
+  const {register,handleSubmit,formState: { errors },setValue} = useForm();
+
+  const afegir = (data) => {
+    const data2 = { ...data, upload: data.upload[0]}
+    dispatch(addPlace(data2, authToken));
+  }
+
+
   
   useEffect (()=> {
     navigator.geolocation.getCurrentPosition( (pos )=> {
 
-      //setLat(pos.coords.latitude)
+      setValue('latitude', pos.coords.latitude)
+      setValue('longitude', pos.coords.longitude)
 
-      setFormulari({
-        ...formulari,
-        latitude :  pos.coords.latitude,
-        longitude: pos.coords.longitude,
-        visibility: 1
-    
-      })
     });  
   },[])
 
@@ -76,34 +90,51 @@ const PlaceAdd = () => {
             <h1>Add a place</h1>
           </div>
           <form>
-            <input className="sr-only" name="name" value={formulari.name} type="text" placeholder="Name" onChange={handleChange} />
+            <input className="sr-only" type="text" placeholder="Name" {...register("name",{
+                                                                        required: "Aquest camp és obligatori",
+                                                                      })}/>
+            {errors.name && <p>{errors.name.message}</p>}
             <br />
             <br />
-            <input name="description" value={formulari.description} type="text" placeholder="Description" onChange={handleChange} />
+            <input type="text" placeholder="Description" {...register("description",{
+                                                            required: "Aquest camp és obligatori",
+                                                          })}/>
+            {errors.description && <p>{errors.description.message}</p>}
             <br />
             <br />
-            <input name="upload" type="file" onChange={handleChange} />
+            <input type="file" {...register("upload",{
+                                required: "Aquest camp és obligatori",
+                              })}/>
+            {errors.upload && <p>{errors.upload.message}</p>}
             <br />
             <br />
-            <input name="latitude" value={formulari.latitude} type="text" onChange={handleChange} />
+            <input type="text" {...register("latitude",{
+                                  required: "Aquest camp és obligatori",
+                                })}/>
+            {errors.latitude && <p>{errors.latitude.message}</p>}
             <br />
             <br />
-            <input name="longitude" value={formulari.longitude} type="text" onChange={handleChange} />
+            <input type="text" {...register("longitude",{
+                                  required: "Aquest camp és obligatori",
+                                })}/>
+            {errors.longitude && <p>{errors.longitude.message}</p>}
             <br />
             <br />
-            <select onChange={handleChange} name="visibility" value={formulari.visibility} className="form-control">
+            <select className="form-control" {...register("visibility",{
+                                                required: "Aquest camp és obligatori",
+                                              })}>
               <option value="1">Public</option>
               <option value="2">Private</option>
               <option value="3">Contacts</option>
             </select>
+            {errors.visibility && <p>{errors.visibility.message}</p>}
             <br />
             <br />
             {missatge ? <div>{missatge}</div> : <></>}
             <br />
             <button className="btn btn-primary"
             onClick={(e) => {
-              e.preventDefault();
-              dispatch(addPlace(formulari,authToken));
+              handleSubmit(afegir)
               navigate(-1)
             }}
             >
