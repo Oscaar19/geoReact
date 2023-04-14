@@ -6,6 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPlaces } from "../slices/places/thunks";
 import { startLoadingPlaces } from "../slices/places/placeSlice";
 
+/**
+    * This components where all the places are shown.
+    */
+
 export default function PlacesList() {
     let {authToken,setAuthToken,usuari, setUsuari} = useContext(UserContext)
     const { places = []} = useSelector((state) => state.places);

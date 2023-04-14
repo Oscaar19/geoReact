@@ -1,6 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../userContext'
 
+/**
+    * This file makes all the operations related with Login.
+    */
+
 const useLogin = () => {
 
     let {authToken,setAuthToken,usuari, setUsuari,idUser, setIdUser} = useContext(UserContext)
