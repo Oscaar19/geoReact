@@ -49,6 +49,7 @@ const PlaceAdd = () => {
   const afegir = (data) => {
     const data2 = { ...data, upload: data.upload[0]}
     dispatch(addPlace(data2, authToken));
+    navigate(-1)
   }
 
 
@@ -63,24 +64,6 @@ const PlaceAdd = () => {
   },[])
 
 
-  const handleChange = (e) => {
-    e.preventDefault();
-
-    missatge=""
-
-    if (e.target.type && e.target.type==="file")
-      {
-        setFormulari({
-          ...formulari,
-          [e.target.name] : e.target.files[0] 
-        })
-      } else {
-        setFormulari({
-          ...formulari,
-          [e.target.name] : e.target.value
-      })
-    }
-  }
   
   return (
     <>
@@ -133,10 +116,9 @@ const PlaceAdd = () => {
             {missatge ? <div>{missatge}</div> : <></>}
             <br />
             <button className="btn btn-primary"
-            onClick={(e) => {
-              handleSubmit(afegir)
-              navigate(-1)
-            }}
+            onClick={ handleSubmit(afegir)
+              //navigate(-1)
+            }
             >
             CREATE PLACE
             </button>

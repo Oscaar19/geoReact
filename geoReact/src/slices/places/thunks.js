@@ -150,6 +150,8 @@ export const addPlace = (formulari,authToken) => {
         formData.append("longitude", longitude);
         formData.append("visibility", visibility);
 
+        console.log("AAAAAAAA")
+
         const data = await fetch("https://backend.insjoaquimmir.cat/api/places/",
 
             {
